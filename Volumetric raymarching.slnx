@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="Volumetric raymarching.vcxproj" Id="bf9407b1-e95e-4322-a3d0-e9c424294813" />
+</Solution>
