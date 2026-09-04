@@ -16,6 +16,7 @@ public:
 
 	// Привязка uniform-переменной шейдера к конкретному номеру слота
 	void texIUnit(Shader& shader, const char* uniform, GLuint unit);
+	void Update(const void* data, int width, int height, int depth, GLenum format, GLenum pixelType);
 
 	void Bind();
 	void Unbind();

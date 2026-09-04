@@ -61,7 +61,7 @@ int main()
 
 	glViewport(0, 0, WIDTH, HEIGHT);
 
-	Camera camera(WIDTH, HEIGHT, glm::vec3(0.0f, 0.0f, 2.0f));
+	Camera camera(WIDTH, HEIGHT, glm::vec3(0.0f, 0.0f, 6.0f));
 
 	// Инициализация графического конвейера (компиляция и линковка шейдеров)
 	Shader shaderProgram("default.vert", "default.frag");
@@ -115,27 +115,60 @@ int main()
 	ImGui_ImplOpenGL3_Init("#version 330");
 
 	// Переменная для нашего ползунка (static, чтобы не сбрасывалась каждый кадр)
-	static float density_value = 1.0f;
-
+	static float density_value = 0.5f;
 
 	while (!glfwWindowShouldClose(window)) 
 	{
-		// А) НАЧАЛО КАДРА IMGUI
+		glfwPollEvents();
+
+		bool isRightMouseDown = (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS);
+
+		if (!isRightMouseDown)
+		{
+			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+
+			io.ConfigFlags &= ~ImGuiConfigFlags_NoMouse;
+		}
+		else 
+		{
+			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+			io.ConfigFlags |= ImGuiConfigFlags_NoMouse;
+		}
+
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
 
-		// Б) СОЗДАНИЕ ИНТЕРФЕЙСА (ОКНО И ПОЛЗУНОК)
 		{
-			ImGui::Begin("Panel"); // Начало окна ImGui
+			ImGui::Begin("Scene"); // Начало окна ImGui
 
-			ImGui::Text("Scene:");   // Текст
+			ImGui::Text("Main alghoritm:");   // Текст
 
 			// Наш ползунок (Slider)
 			// "Плотность луча" — название
 			// &density_value   — адрес переменной, которую меняем
 			// 0.0f, 10.0f      — минимальное и максимальное значения
 			ImGui::SliderFloat("IsoLevel", &density_value, 0.0f, 1.0f);
+
+			ImGui::Text("Noise:");
+
+			ImGui::SliderFloat("Frequency", &box->frequency, 0.0f, 2.0f);
+			ImGui::SliderFloat("Amplitude", &box->amplitude, 0.0f, 2.0f);
+
+			if (ImGui::Button("Apply adjustments"))
+			{
+				box->FillGrid();
+
+				noise3DTexture.Update(
+					&box->grid[0][0][0],
+					Box::GRID_X,
+					Box::GRID_Y,
+					Box::GRID_X,
+					GL_RED,
+					GL_FLOAT
+				);
+			}
 
 			ImGui::End(); // Конец окна ImGui
 		}
@@ -189,14 +222,19 @@ int main()
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-		glfwSwapBuffers(window);
+		shaderProgram.SetFloat("isoLevel", density_value);
 
-		glfwPollEvents();
+		glfwSwapBuffers(window);
 	}
 
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplGlfw_Shutdown();
 	ImGui::DestroyContext();
+
+	noise3DTexture.Delete();
+	VAO1.Delete();
+	VBO1.Delete();
+	shaderProgram.Delete();
 
 	glfwDestroyWindow(window); // Уничтожение дескриптора окна
 	glfwTerminate();           // Корректное завершение работы подсистемы GLFW

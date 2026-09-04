@@ -9,6 +9,7 @@ uniform vec3 camForward;
 uniform vec3 camRight;
 uniform vec3 camUp;
 uniform sampler3D uNoise;
+uniform float isoLevel;
 
 //NOISE FUNCTION
 
@@ -42,10 +43,8 @@ float getVolumeDensity(vec3 uvw) {
 }
 
 vec4 getIsoColor(float density) {
-    float ISO_LEVEL = 0.5; 
-    
-    if (density >= ISO_LEVEL) {
-        return vec4(density, 0, ISO_LEVEL, 1.0); 
+    if (density >= isoLevel) {
+        return vec4(density, 0, 0.7, 1.0); 
     }
     
     return vec4(0.0);

@@ -27,6 +27,21 @@ Texture::Texture(const void* data, int width, int height, int depth, GLenum form
 	glBindTexture(GL_TEXTURE_3D, 0);
 }
 
+void Texture::Update(const void* data, int width, int height, int depth, GLenum format, GLenum pixelType) {
+	// Активируем текстурный слот и привязываем текстуру
+	glActiveTexture(slot);
+	glBindTexture(type, ID);
+
+	// Выравнивание строк данных в памяти (как в конструкторе)
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+	// Обновляем данные всей текстуры (начиная с офсета 0, 0, 0)
+	glTexSubImage3D(type, 0, 0, 0, 0, width, height, depth, format, pixelType, data);
+
+	// Отвязываем текстуру
+	glBindTexture(type, 0);
+}
+
 
 void Texture::texIUnit(Shader& shader, const char* uniform, GLuint unit) {
 	GLuint texUni = glGetUniformLocation(shader.ID, uniform);

@@ -7,7 +7,9 @@ void Box::FillGrid() {
 
 				double rawNoise = noise.noise(x * frequency, y * frequency, z * frequency);
 
-				grid[x][y][z] = (float)rawNoise;
+				float noiseValue = (float)(rawNoise) * amplitude;
+
+				grid[x][y][z] = noiseValue;
 			}
 		}
 	}

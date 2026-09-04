@@ -10,6 +10,7 @@ public:
 	float grid[GRID_X][GRID_Y][GRID_X];
 
 	float frequency = 0.1f;
+	float amplitude = 1.0f;
 
 	SimplexNoise noise;
 
