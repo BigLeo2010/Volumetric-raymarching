@@ -13,6 +13,10 @@
 #include"Camera.h"
 #include"Box.h"
 
+#include "imgui.h"
+#include "backends/imgui_impl_glfw.h"
+#include "backends/imgui_impl_opengl3.h"
+
 GLfloat vertices[] = {
 	// Первый треугольник
 	-1.0f, -1.0f, 0.0f,  // 1. Низ-лево
@@ -96,8 +100,47 @@ int main()
 	noise3DTexture.texIUnit(shaderProgram, "uNoise", 0);
 
 
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+
+	// Включаем клавиатуру и навигацию (опционально)
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+
+	// Настраиваем стиль (темная тема)
+	ImGui::StyleColorsDark();
+
+	// Инициализируем бэкенды ImGui для GLFW и OpenGL
+	ImGui_ImplGlfw_InitForOpenGL(window, true);
+	ImGui_ImplOpenGL3_Init("#version 330");
+
+	// Переменная для нашего ползунка (static, чтобы не сбрасывалась каждый кадр)
+	static float density_value = 1.0f;
+
+
 	while (!glfwWindowShouldClose(window)) 
 	{
+		// А) НАЧАЛО КАДРА IMGUI
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplGlfw_NewFrame();
+		ImGui::NewFrame();
+
+		// Б) СОЗДАНИЕ ИНТЕРФЕЙСА (ОКНО И ПОЛЗУНОК)
+		{
+			ImGui::Begin("Panel"); // Начало окна ImGui
+
+			ImGui::Text("Scene:");   // Текст
+
+			// Наш ползунок (Slider)
+			// "Плотность луча" — название
+			// &density_value   — адрес переменной, которую меняем
+			// 0.0f, 10.0f      — минимальное и максимальное значения
+			ImGui::SliderFloat("IsoLevel", &density_value, 0.0f, 1.0f);
+
+			ImGui::End(); // Конец окна ImGui
+		}
+
+
 		glClearColor(backgroundColor[0], backgroundColor[1], backgroundColor[2], 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
@@ -143,10 +186,17 @@ int main()
 
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 
+		ImGui::Render();
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
 		glfwSwapBuffers(window);
 
 		glfwPollEvents();
 	}
+
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
 
 	glfwDestroyWindow(window); // Уничтожение дескриптора окна
 	glfwTerminate();           // Корректное завершение работы подсистемы GLFW

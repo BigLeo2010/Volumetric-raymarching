@@ -16,6 +16,12 @@
     <Filter Include="Файлы ресурсов\Shaders">
       <UniqueIdentifier>{11c20056-da46-46f4-9376-ac2e748864ea}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Файлы ресурсов\Imgui">
+      <UniqueIdentifier>{8f0262f6-0742-4023-84bf-34c48268619b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы ресурсов\Imgui\backends">
+      <UniqueIdentifier>{256ff0ca-b616-4894-9a73-664277842a63}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h">
@@ -38,6 +44,33 @@
     </ClInclude>
     <ClInclude Include="Texture.h">
       <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Libraries\external\Imgui\imconfig.h">
+      <Filter>Файлы ресурсов\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Libraries\external\Imgui\imgui.h">
+      <Filter>Файлы ресурсов\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Libraries\external\Imgui\backends\imgui_impl_glfw.h">
+      <Filter>Файлы ресурсов\Imgui\backends</Filter>
+    </ClInclude>
+    <ClInclude Include="Libraries\external\Imgui\backends\imgui_impl_opengl3.h">
+      <Filter>Файлы ресурсов\Imgui\backends</Filter>
+    </ClInclude>
+    <ClInclude Include="Libraries\external\Imgui\backends\imgui_impl_opengl3_loader.h">
+      <Filter>Файлы ресурсов\Imgui\backends</Filter>
+    </ClInclude>
+    <ClInclude Include="Libraries\external\Imgui\imgui_internal.h">
+      <Filter>Файлы ресурсов\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Libraries\external\Imgui\imstb_textedit.h">
+      <Filter>Файлы ресурсов\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Libraries\external\Imgui\imstb_rectpack.h">
+      <Filter>Файлы ресурсов\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Libraries\external\Imgui\imstb_truetype.h">
+      <Filter>Файлы ресурсов\Imgui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -67,6 +100,27 @@
     </ClCompile>
     <ClCompile Include="Texture.cpp">
       <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\external\Imgui\imgui.cpp">
+      <Filter>Файлы ресурсов\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\external\Imgui\imgui_demo.cpp">
+      <Filter>Файлы ресурсов\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\external\Imgui\imgui_draw.cpp">
+      <Filter>Файлы ресурсов\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\external\Imgui\imgui_tables.cpp">
+      <Filter>Файлы ресурсов\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\external\Imgui\imgui_widgets.cpp">
+      <Filter>Файлы ресурсов\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\external\Imgui\backends\imgui_impl_glfw.cpp">
+      <Filter>Файлы ресурсов\Imgui\backends</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\external\Imgui\backends\imgui_impl_opengl3.cpp">
+      <Filter>Файлы ресурсов\Imgui\backends</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

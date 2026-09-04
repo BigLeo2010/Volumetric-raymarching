@@ -42,7 +42,7 @@ float getVolumeDensity(vec3 uvw) {
 }
 
 vec4 getIsoColor(float density) {
-    float ISO_LEVEL = abs(sin(time * 0.3)); 
+    float ISO_LEVEL = 0.5; 
     
     if (density >= ISO_LEVEL) {
         return vec4(density, 0, ISO_LEVEL, 1.0); 

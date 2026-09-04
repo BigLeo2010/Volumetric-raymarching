@@ -93,7 +93,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>D:\Projects\Volumetric raymarching\Libraries\include\KHR;D:\Projects\Volumetric raymarching\Libraries\include\glm;D:\Projects\Volumetric raymarching\Libraries\include\GLFW;D:\Projects\Volumetric raymarching\Libraries\include\glad;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Projects\Volumetric raymarching\Libraries\external\Imgui;D:\Projects\Volumetric raymarching\Libraries\include\KHR;D:\Projects\Volumetric raymarching\Libraries\include\glm;D:\Projects\Volumetric raymarching\Libraries\include\GLFW;D:\Projects\Volumetric raymarching\Libraries\include\glad;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -114,7 +114,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>D:\Projects\Volumetric raymarching\Libraries\include\KHR;D:\Projects\Volumetric raymarching\Libraries\include\glm;D:\Projects\Volumetric raymarching\Libraries\include\GLFW;D:\Projects\Volumetric raymarching\Libraries\include\glad;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Projects\Volumetric raymarching\Libraries\external\Imgui;D:\Projects\Volumetric raymarching\Libraries\include\KHR;D:\Projects\Volumetric raymarching\Libraries\include\glm;D:\Projects\Volumetric raymarching\Libraries\include\GLFW;D:\Projects\Volumetric raymarching\Libraries\include\glad;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -133,7 +133,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>D:\Projects\Volumetric raymarching\Libraries\include\KHR;D:\Projects\Volumetric raymarching\Libraries\include\glm;D:\Projects\Volumetric raymarching\Libraries\include\GLFW;D:\Projects\Volumetric raymarching\Libraries\include\glad;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Projects\Volumetric raymarching\Libraries\external\Imgui;D:\Projects\Volumetric raymarching\Libraries\include\KHR;D:\Projects\Volumetric raymarching\Libraries\include\glm;D:\Projects\Volumetric raymarching\Libraries\include\GLFW;D:\Projects\Volumetric raymarching\Libraries\include\glad;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -154,7 +154,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>D:\Projects\Volumetric raymarching\Libraries\include\KHR;D:\Projects\Volumetric raymarching\Libraries\include\glm;D:\Projects\Volumetric raymarching\Libraries\include\GLFW;D:\Projects\Volumetric raymarching\Libraries\include\glad;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Projects\Volumetric raymarching\Libraries\external\Imgui;D:\Projects\Volumetric raymarching\Libraries\include\KHR;D:\Projects\Volumetric raymarching\Libraries\include\glm;D:\Projects\Volumetric raymarching\Libraries\include\GLFW;D:\Projects\Volumetric raymarching\Libraries\include\glad;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -169,6 +169,15 @@
   <ItemGroup>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Box.h" />
+    <ClInclude Include="Libraries\external\Imgui\backends\imgui_impl_glfw.h" />
+    <ClInclude Include="Libraries\external\Imgui\backends\imgui_impl_opengl3.h" />
+    <ClInclude Include="Libraries\external\Imgui\backends\imgui_impl_opengl3_loader.h" />
+    <ClInclude Include="Libraries\external\Imgui\imconfig.h" />
+    <ClInclude Include="Libraries\external\Imgui\imgui.h" />
+    <ClInclude Include="Libraries\external\Imgui\imgui_internal.h" />
+    <ClInclude Include="Libraries\external\Imgui\imstb_rectpack.h" />
+    <ClInclude Include="Libraries\external\Imgui\imstb_textedit.h" />
+    <ClInclude Include="Libraries\external\Imgui\imstb_truetype.h" />
     <ClInclude Include="shaderClass.h" />
     <ClInclude Include="SimplexNoise.h" />
     <ClInclude Include="Texture.h" />
@@ -179,6 +188,13 @@
     <ClCompile Include="C:\Users\lamba\Desktop\glad\src\glad.c" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Box.cpp" />
+    <ClCompile Include="Libraries\external\Imgui\backends\imgui_impl_glfw.cpp" />
+    <ClCompile Include="Libraries\external\Imgui\backends\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="Libraries\external\Imgui\imgui.cpp" />
+    <ClCompile Include="Libraries\external\Imgui\imgui_demo.cpp" />
+    <ClCompile Include="Libraries\external\Imgui\imgui_draw.cpp" />
+    <ClCompile Include="Libraries\external\Imgui\imgui_tables.cpp" />
+    <ClCompile Include="Libraries\external\Imgui\imgui_widgets.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="shaderClass.cpp" />
     <ClCompile Include="SimplexNoise.cpp" />
