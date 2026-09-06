@@ -72,6 +72,9 @@
     <ClInclude Include="Libraries\external\Imgui\imstb_truetype.h">
       <Filter>Файлы ресурсов\Imgui</Filter>
     </ClInclude>
+    <ClInclude Include="GUI.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp">
@@ -121,6 +124,9 @@
     </ClCompile>
     <ClCompile Include="Libraries\external\Imgui\backends\imgui_impl_opengl3.cpp">
       <Filter>Файлы ресурсов\Imgui\backends</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI.cpp">
+      <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

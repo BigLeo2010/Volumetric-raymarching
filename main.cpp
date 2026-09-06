@@ -12,6 +12,7 @@
 #include"VBO.h"
 #include"Camera.h"
 #include"Box.h"
+#include"GUI.h"
 
 #include "imgui.h"
 #include "backends/imgui_impl_glfw.h"
@@ -82,7 +83,7 @@ int main()
 	double lastTime = glfwGetTime();
 	double lastTimeFPS = glfwGetTime();
 	int nbFrames = 0;
-
+	double fps = 0;
 
 	auto box = std::make_unique<Box>();
 	box->FillGrid();
@@ -99,80 +100,15 @@ int main()
 
 	noise3DTexture.texIUnit(shaderProgram, "uNoise", 0);
 
-
-	IMGUI_CHECKVERSION();
-	ImGui::CreateContext();
-	ImGuiIO& io = ImGui::GetIO(); (void)io;
-
-	// Включаем клавиатуру и навигацию (опционально)
-	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
-
-	// Настраиваем стиль (темная тема)
-	ImGui::StyleColorsDark();
-
-	// Инициализируем бэкенды ImGui для GLFW и OpenGL
-	ImGui_ImplGlfw_InitForOpenGL(window, true);
-	ImGui_ImplOpenGL3_Init("#version 330");
-
-	// Переменная для нашего ползунка (static, чтобы не сбрасывалась каждый кадр)
-	static float density_value = 0.5f;
+	GUI settings;
+	settings.InitGUI(window);
 
 	while (!glfwWindowShouldClose(window)) 
 	{
 		glfwPollEvents();
 
-		bool isRightMouseDown = (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS);
-
-		if (!isRightMouseDown)
-		{
-			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-
-			io.ConfigFlags &= ~ImGuiConfigFlags_NoMouse;
-		}
-		else 
-		{
-			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
-			io.ConfigFlags |= ImGuiConfigFlags_NoMouse;
-		}
-
-		ImGui_ImplOpenGL3_NewFrame();
-		ImGui_ImplGlfw_NewFrame();
-		ImGui::NewFrame();
-
-		{
-			ImGui::Begin("Scene"); // Начало окна ImGui
-
-			ImGui::Text("Main alghoritm:");   // Текст
-
-			// Наш ползунок (Slider)
-			// "Плотность луча" — название
-			// &density_value   — адрес переменной, которую меняем
-			// 0.0f, 10.0f      — минимальное и максимальное значения
-			ImGui::SliderFloat("IsoLevel", &density_value, 0.0f, 1.0f);
-
-			ImGui::Text("Noise:");
-
-			ImGui::SliderFloat("Frequency", &box->frequency, 0.0f, 2.0f);
-			ImGui::SliderFloat("Amplitude", &box->amplitude, 0.0f, 2.0f);
-
-			if (ImGui::Button("Apply adjustments"))
-			{
-				box->FillGrid();
-
-				noise3DTexture.Update(
-					&box->grid[0][0][0],
-					Box::GRID_X,
-					Box::GRID_Y,
-					Box::GRID_X,
-					GL_RED,
-					GL_FLOAT
-				);
-			}
-
-			ImGui::End(); // Конец окна ImGui
-		}
-
+		settings.UIInputs();
+		settings.CreateGUI(fps, noise3DTexture, box);
 
 		glClearColor(backgroundColor[0], backgroundColor[1], backgroundColor[2], 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
@@ -185,12 +121,7 @@ int main()
 
 		if (curTime - lastTimeFPS >= 1.0)
 		{
-			double fps = double(nbFrames);
-
-			std::string windowTitle = "SDF Raymarching   FPS: " + std::to_string(int(fps));
-
-			glfwSetWindowTitle(window, windowTitle.c_str());
-
+			fps = double(nbFrames);
 			nbFrames = 0;
 			lastTimeFPS += 1.0;
 		}
@@ -219,17 +150,11 @@ int main()
 
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 
-		ImGui::Render();
-		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-		shaderProgram.SetFloat("isoLevel", density_value);
+		settings.Render();
+		settings.UniformValues(shaderProgram);
 
 		glfwSwapBuffers(window);
 	}
-
-	ImGui_ImplOpenGL3_Shutdown();
-	ImGui_ImplGlfw_Shutdown();
-	ImGui::DestroyContext();
 
 	noise3DTexture.Delete();
 	VAO1.Delete();
