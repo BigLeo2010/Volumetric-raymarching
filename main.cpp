@@ -112,7 +112,7 @@ int main()
 	std::copy(rawBuffer.begin(), rawBuffer.end(), cubeBuffer.begin());
 
 	Texture teapotTexture(
-		cubeBuffer.data(),
+		cubeBuffer.data(), 
 		targetSize,
 		targetSize,
 		targetSize,
