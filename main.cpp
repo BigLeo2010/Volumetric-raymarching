@@ -1,3 +1,5 @@
+// САЙТ С РАЗНЫМИ ШУМАМИ
+// http://klacansky.com/open-scivis-datasets/
 #include<iostream>
 #include<glad/glad.h>
 #include<GLFW/glfw3.h>
@@ -13,10 +15,6 @@
 #include"Camera.h"
 #include"Box.h"
 #include"GUI.h"
-
-#include "imgui.h"
-#include "backends/imgui_impl_glfw.h"
-#include "backends/imgui_impl_opengl3.h"
 
 GLfloat vertices[] = {
 	// Первый треугольник
@@ -48,7 +46,7 @@ int main()
 	GLfloat backgroundColor[] = { 45.0f/255.0f, 45.0f / 255.0f, 45.0f / 255.0f }; // Нормализованные RGBA значения цвета очистки
 
 	// Инстанцирование объекта окна и создание ассоциированного контекста OpenGL
-	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "SDF Raymarching", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Volumetric Raymarching", NULL, NULL);
 
 	if (window == NULL) {
 		std::cout << "Failed to create a window" << std::endl;
@@ -88,17 +86,42 @@ int main()
 	auto box = std::make_unique<Box>();
 	box->FillGrid();
 
-	Texture noise3DTexture(
-		&box->grid[0][0][0],
-		Box::GRID_X,
-		Box::GRID_Y,
-		Box::GRID_X,
+	const int teapotW = 256;
+	const int teapotH = 256;
+	const int teapotD = 124;
+
+	std::vector<uint8_t> rawBuffer(teapotW * teapotH * teapotD);
+
+	//FILE NAMES:
+	//mri_ventricles_256x256x124_uint8.raw HEAD MRI
+	//boston_teapot_256x256x178_uint8.raw Teapot MRI
+	//vis_male_128x256x256_uint8.raw Fun male head
+	//bonsai_256x256x256_uint8.raw Bonsai tree
+
+	std::ifstream file("mri_ventricles_256x256x124_uint8.raw", std::ios::binary);
+	if (!file.is_open()) {
+		std::cerr << "КРИТИЧЕСКАЯ ОШИБКА: Не удалось открыть файл" << std::endl;
+		return -1;
+	}
+	file.read(reinterpret_cast<char*>(rawBuffer.data()), rawBuffer.size());
+	file.close();
+
+	const int targetSize = 256;
+	std::vector<uint8_t> cubeBuffer(targetSize * targetSize * targetSize, 0);
+
+	std::copy(rawBuffer.begin(), rawBuffer.end(), cubeBuffer.begin());
+
+	Texture teapotTexture(
+		cubeBuffer.data(),
+		targetSize,
+		targetSize,
+		targetSize,
 		GL_RED,
-		GL_FLOAT,
+		GL_UNSIGNED_BYTE,
 		GL_TEXTURE0
 	);
 
-	noise3DTexture.texIUnit(shaderProgram, "uNoise", 0);
+	teapotTexture.texIUnit(shaderProgram, "uNoise", 0);
 
 	GUI settings;
 	settings.InitGUI(window);
@@ -108,7 +131,7 @@ int main()
 		glfwPollEvents();
 
 		settings.UIInputs();
-		settings.CreateGUI(fps, noise3DTexture, box);
+		settings.CreateGUI(fps, teapotTexture, box);
 
 		glClearColor(backgroundColor[0], backgroundColor[1], backgroundColor[2], 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
@@ -133,7 +156,7 @@ int main()
 
 		camera.Matrix(shaderProgram, "camMatrix");
 
-		noise3DTexture.Bind();
+		teapotTexture.Bind();
 
 		VAO1.Bind(); // Контекстная активация сконфигурированных вершинных атрибутов
 
@@ -156,7 +179,7 @@ int main()
 		glfwSwapBuffers(window);
 	}
 
-	noise3DTexture.Delete();
+	teapotTexture.Delete();
 	VAO1.Delete();
 	VBO1.Delete();
 	shaderProgram.Delete();

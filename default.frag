@@ -33,21 +33,19 @@ bool rayAABBIntersection(vec3 ro, vec3 rd, vec3 boxMin, vec3 boxMax, out float t
 
 float getVolumeDensity(vec3 uvw) {
     float d = texture(uNoise, uvw).r; 
-    
-    d = d * 0.5 + 0.5; 
-    
-    float distToCenter = length(uvw - vec3(0.5));
-    float sphereMask = smoothstep(0.5, 0.2, distToCenter);
-    
-    return d * sphereMask;
+    return d; 
 }
 
-vec4 getIsoColor(float density) {
-    if (density >= isoLevel) {
-        return vec4(density, 0, 0.7, 1.0); 
-    }
+// Функция вычисления нормали с помощью центральных разностей (градиент плотности)
+vec3 getVolumeNormal(vec3 uvw) {
+    float delta = 0.005; // Шаг смещения для сэмплирования
     
-    return vec4(0.0);
+    float dx = getVolumeDensity(uvw + vec3(delta, 0.0, 0.0)) - getVolumeDensity(uvw - vec3(delta, 0.0, 0.0));
+    float dy = getVolumeDensity(uvw + vec3(0.0, delta, 0.0)) - getVolumeDensity(uvw - vec3(0.0, delta, 0.0));
+    float dz = getVolumeDensity(uvw + vec3(0.0, 0.0, delta)) - getVolumeDensity(uvw - vec3(0.0, 0.0, delta));
+    
+    // Вектор градиента направлен в сторону увеличения плотности, инвертируем для нормали наружу
+    return normalize(-vec3(dx, dy, dz) + vec3(1e-6)); 
 }
 
 //ВРАЩЕНИЕ
@@ -71,6 +69,7 @@ vec3 rotateZ(vec3 p, float angle) {
 
 //ОТРИСОВКА
 
+vec3 light_position = vec3(0.0, 5.0, 5.0);
 
 vec3 ray_march(in vec3 ro, in vec3 rd)
 {
@@ -92,25 +91,35 @@ vec3 ray_march(in vec3 ro, in vec3 rd)
     float t = tNear;
 
 	for (int i = 0; i < NUM_OF_STEPS; ++i)
-	{
-		if (t > tFar) break;
+    {
+        if (t > tFar) break;
 
         vec3 p = ro + rd * t;
-
         vec3 uvw = (p - BOX_MIN) / (BOX_MAX - BOX_MIN);
 
         float density = getVolumeDensity(uvw);
 
-        vec4 color = getIsoColor(density);
+        if (density >= isoLevel) {
+            vec3 normal = getVolumeNormal(uvw);
+            
+            vec3 direction_to_light = normalize(light_position - p);
 
-        if (color.a > 0.0) {
-            return color.rgb;
+            float diffuse_intensity = max(0.0, dot(normal, direction_to_light));
+            
+            float ambient = 0.2; 
+            float lighting = max(diffuse_intensity, ambient);
+
+            vec3 yellow = vec3(0.0, 0.0, 1.0);
+            vec3 red = vec3(1.0, 0.0, 0.0);
+
+            vec4 baseColor = vec4(mix(yellow/2, red*2, density), 1.0);
+            return baseColor.rgb * lighting;
         }
 
         t += STEP_SIZE;
-	}
+    }
 
-	return vec3(35.0/255.0,35.0/255.0,35.0/255.0);
+    return vec3(35.0/255.0, 35.0/255.0, 35.0/255.0);
 }
 
 void main()
