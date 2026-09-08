@@ -30,21 +30,25 @@ bool rayAABBIntersection(vec3 ro, vec3 rd, vec3 boxMin, vec3 boxMax, out float t
     return tNear < tFar && tFar > 0.0;
 }
 
+//Ray jittering
+float hash(vec2 p) {
+    return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123);
+}
 
 float getVolumeDensity(vec3 uvw) {
     float d = texture(uNoise, uvw).r; 
     return d; 
 }
 
-// Функция вычисления нормали с помощью центральных разностей (градиент плотности)
+//ОСВЕЩЕНИЕ
+
 vec3 getVolumeNormal(vec3 uvw) {
-    float delta = 0.005; // Шаг смещения для сэмплирования
+    float delta = 0.01;
     
     float dx = getVolumeDensity(uvw + vec3(delta, 0.0, 0.0)) - getVolumeDensity(uvw - vec3(delta, 0.0, 0.0));
     float dy = getVolumeDensity(uvw + vec3(0.0, delta, 0.0)) - getVolumeDensity(uvw - vec3(0.0, delta, 0.0));
     float dz = getVolumeDensity(uvw + vec3(0.0, 0.0, delta)) - getVolumeDensity(uvw - vec3(0.0, 0.0, delta));
     
-    // Вектор градиента направлен в сторону увеличения плотности, инвертируем для нормали наружу
     return normalize(-vec3(dx, dy, dz) + vec3(1e-6)); 
 }
 
@@ -88,7 +92,8 @@ vec3 ray_march(in vec3 ro, in vec3 rd)
     const float MINIMUM_HIT_DISTANCE = 0.001;
     const float MAXIMUM_TRACE_DISTANCE = 100.0;
     
-    float t = tNear;
+    float jitter = hash(gl_FragCoord.xy) * STEP_SIZE;
+    float t = tNear + jitter;
 
 	for (int i = 0; i < NUM_OF_STEPS; ++i)
     {
@@ -100,6 +105,23 @@ vec3 ray_march(in vec3 ro, in vec3 rd)
         float density = getVolumeDensity(uvw);
 
         if (density >= isoLevel) {
+            //Интерполяция
+            if (i > 0) {
+                float prev_t = t - STEP_SIZE;
+                vec3 prev_p = ro + rd * prev_t;
+                vec3 prev_uvw = (prev_p - BOX_MIN) / (BOX_MAX - BOX_MIN);
+                float prev_density = getVolumeDensity(prev_uvw);
+                
+                float deltaDensity = density - prev_density;
+                if (abs(deltaDensity) > 1e-5) {
+                    float factor = (isoLevel - prev_density) / deltaDensity;
+                    t = mix(prev_t, t, factor);
+                    p = ro + rd * t;
+                    uvw = (p - BOX_MIN) / (BOX_MAX - BOX_MIN);
+                    density = getVolumeDensity(uvw);
+                }
+            }
+            
             vec3 normal = getVolumeNormal(uvw);
             
             vec3 direction_to_light = normalize(light_position - p);
@@ -134,3 +156,8 @@ void main()
 
 	FragColor = vec4(ray_march(ro, rd), 1.0);
 } 
+
+//Список задач
+//Отдельно заранее просчитывать нормали
+//Пропускать пустое простарнство внутри коробки
+//Хз мб еще че найду
