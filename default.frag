@@ -9,6 +9,7 @@ uniform vec3 camForward;
 uniform vec3 camRight;
 uniform vec3 camUp;
 uniform sampler3D uNoise;
+uniform sampler3D uNormal;
 uniform float isoLevel;
 
 //NOISE FUNCTION
@@ -32,7 +33,7 @@ bool rayAABBIntersection(vec3 ro, vec3 rd, vec3 boxMin, vec3 boxMax, out float t
 
 //Ray jittering
 float hash(vec2 p) {
-    return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123);
+    return fract(52.9829189 * fract(dot(p, vec2(0.0605, 0.00767))));
 }
 
 float getVolumeDensity(vec3 uvw) {
@@ -42,7 +43,7 @@ float getVolumeDensity(vec3 uvw) {
 
 //ОСВЕЩЕНИЕ
 
-vec3 getVolumeNormal(vec3 uvw) {
+/*vec3 getVolumeNormal(vec3 uvw) {
     float delta = 0.01;
     
     float dx = getVolumeDensity(uvw + vec3(delta, 0.0, 0.0)) - getVolumeDensity(uvw - vec3(delta, 0.0, 0.0));
@@ -50,6 +51,12 @@ vec3 getVolumeNormal(vec3 uvw) {
     float dz = getVolumeDensity(uvw + vec3(0.0, 0.0, delta)) - getVolumeDensity(uvw - vec3(0.0, 0.0, delta));
     
     return normalize(-vec3(dx, dy, dz) + vec3(1e-6)); 
+}*/
+
+vec3 getVolumeNormal(vec3 uvw) {
+    vec3 encodedNormal = texture(uNormal, uvw).rgb;
+    vec3 normal = encodedNormal * 2.0 - 1.0;
+    return normalize(normal);
 }
 
 //ВРАЩЕНИЕ

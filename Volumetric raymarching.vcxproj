@@ -179,6 +179,7 @@
     <ClInclude Include="Libraries\external\Imgui\imstb_rectpack.h" />
     <ClInclude Include="Libraries\external\Imgui\imstb_textedit.h" />
     <ClInclude Include="Libraries\external\Imgui\imstb_truetype.h" />
+    <ClInclude Include="NormalGeneration.h" />
     <ClInclude Include="shaderClass.h" />
     <ClInclude Include="SimplexNoise.h" />
     <ClInclude Include="Texture.h" />
@@ -198,6 +199,7 @@
     <ClCompile Include="Libraries\external\Imgui\imgui_tables.cpp" />
     <ClCompile Include="Libraries\external\Imgui\imgui_widgets.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="NormalGeneration.cpp" />
     <ClCompile Include="shaderClass.cpp" />
     <ClCompile Include="SimplexNoise.cpp" />
     <ClCompile Include="Texture.cpp" />

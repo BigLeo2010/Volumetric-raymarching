@@ -15,6 +15,7 @@
 #include"Camera.h"
 #include"Box.h"
 #include"GUI.h"
+#include"NormalGeneration.h"
 
 GLfloat vertices[] = {
 	// Первый треугольник
@@ -123,6 +124,19 @@ int main()
 
 	teapotTexture.texIUnit(shaderProgram, "uNoise", 0);
 
+	Texture normalTexture(
+		NormalGeneration::GenerateNormalMap(targetSize, cubeBuffer).data(),
+		targetSize,
+		targetSize,
+		targetSize,
+		GL_RGB,
+		GL_UNSIGNED_BYTE,
+		GL_TEXTURE1
+	);
+
+	normalTexture.texIUnit(shaderProgram, "uNormal", 1);
+
+
 	GUI settings;
 	settings.InitGUI(window);
 
@@ -157,6 +171,7 @@ int main()
 		camera.Matrix(shaderProgram, "camMatrix");
 
 		teapotTexture.Bind();
+		normalTexture.Bind();
 
 		VAO1.Bind(); // Контекстная активация сконфигурированных вершинных атрибутов
 
@@ -180,6 +195,7 @@ int main()
 	}
 
 	teapotTexture.Delete();
+	normalTexture.Delete();
 	VAO1.Delete();
 	VBO1.Delete();
 	shaderProgram.Delete();
