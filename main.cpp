@@ -29,6 +29,15 @@ GLfloat vertices[] = {
 	 -1.0f, -1.0f, 0.0f   // 1. Низ-лево
 };
 
+// Где-нибудь вверху main.cpp (или там, где у вас глобальные переменные)
+Camera* pCamera = nullptr;
+
+// Функция-прослойка для GLFW
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
+	if (pCamera != nullptr) {
+		pCamera->ProcessScroll((float)yoffset);
+	}
+}
 
 int main() 
 {
@@ -61,7 +70,13 @@ int main()
 
 	glViewport(0, 0, WIDTH, HEIGHT);
 
-	Camera camera(WIDTH, HEIGHT, glm::vec3(0.0f, 0.0f, 6.0f));
+	// Создаем камеру (например, вокруг точки 0,0,0)
+	Camera camera(WIDTH, HEIGHT, glm::vec3(0.0f, 0.0f, 0.0f));
+	pCamera = &camera; // Записываем адрес в глобальный указатель
+
+	// Регистрируем коллбэк в GLFW
+	glfwSetScrollCallback(window, scroll_callback);
+
 
 	// Инициализация графического конвейера (компиляция и линковка шейдеров)
 	Shader shaderProgram("default.vert", "default.frag");
@@ -140,12 +155,16 @@ int main()
 	GUI settings;
 	settings.InitGUI(window);
 
-	while (!glfwWindowShouldClose(window)) 
+	static glm::vec3 rgbColorA(0.0f, 0.0f, 1.0f);
+	static glm::vec3 rgbColorB(1.0f, 0.0f, 0.0f);
+	static bool rotate = true;
+
+	while (!glfwWindowShouldClose(window))
 	{
 		glfwPollEvents();
 
 		settings.UIInputs();
-		settings.CreateGUI(fps, teapotTexture, box);
+		settings.CreateGUI(fps, teapotTexture, box, rgbColorA, rgbColorB, rotate);
 
 		glClearColor(backgroundColor[0], backgroundColor[1], backgroundColor[2], 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
@@ -163,12 +182,14 @@ int main()
 			lastTimeFPS += 1.0;
 		}
 
-		camera.Inputs(window, deltaTime);
+		camera.Inputs(window, deltaTime, rotate);
 		camera.UpdateMatrix(45.0f, 0.1f, 100.0f);
 
 		shaderProgram.Activate(); // Инжект шейдерной программы в текущий пайплайн
 
 		camera.Matrix(shaderProgram, "camMatrix");
+
+		
 
 		teapotTexture.Bind();
 		normalTexture.Bind();
@@ -176,15 +197,14 @@ int main()
 		VAO1.Bind(); // Контекстная активация сконфигурированных вершинных атрибутов
 
 		shaderProgram.SetFloat("time", (float)glfwGetTime());
+
 		shaderProgram.SetVec3("camera_position", camera.Position.x, camera.Position.y, camera.Position.z);
 
-		glm::vec3 forward = camera.Orientation;
-		glm::vec3 right = glm::normalize(glm::cross(forward, camera.Up));
-		glm::vec3 up = glm::cross(right, forward);
-
-		shaderProgram.SetVec3("camForward", forward.x, forward.y, forward.z);
-		shaderProgram.SetVec3("camRight", right.x, right.y, right.z);
-		shaderProgram.SetVec3("camUp", up.x, up.y, up.z);
+		shaderProgram.SetVec3("camForward", camera.camForward.x, camera.camForward.y, camera.camForward.z);
+		shaderProgram.SetVec3("camRight", camera.camRight.x, camera.camRight.y, camera.camRight.z);
+		shaderProgram.SetVec3("camUp", camera.camUp.x, camera.camUp.y, camera.camUp.z);
+		shaderProgram.SetVec3("rgbColorA", rgbColorA.x, rgbColorA.y, rgbColorA.z);
+		shaderProgram.SetVec3("rgbColorB", rgbColorB.x, rgbColorB.y, rgbColorB.z);
 
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 
@@ -193,6 +213,7 @@ int main()
 
 		glfwSwapBuffers(window);
 	}
+
 
 	teapotTexture.Delete();
 	normalTexture.Delete();

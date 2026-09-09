@@ -43,7 +43,7 @@ void GUI::UniformValues(Shader& shader) {
     shader.SetFloat("isoLevel", density_value);
 }
 
-void GUI::CreateGUI(double fps, Texture& noise3DTexture, const std::unique_ptr<Box>& box) {
+void GUI::CreateGUI(double fps, Texture& noise3DTexture, const std::unique_ptr<Box>& box, glm::vec3& colorA, glm::vec3& colorB, bool& canRotate) {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
@@ -56,6 +56,12 @@ void GUI::CreateGUI(double fps, Texture& noise3DTexture, const std::unique_ptr<B
 
         ImGui::Text("Main algorithm:");
         ImGui::SliderFloat("IsoLevel", &density_value, 0.0f, 1.0f);
+
+        ImGui::Checkbox("Rotate scan", &canRotate);
+
+        ImGui::Text("Color:");
+        ImGui::ColorEdit3("A", &colorA.r);
+        ImGui::ColorEdit3("B", &colorB.r);
 
         ImGui::Text("Noise:");
         ImGui::SliderFloat("Frequency", &box->frequency, 0.0f, 2.0f);

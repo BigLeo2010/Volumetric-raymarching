@@ -11,6 +11,8 @@ uniform vec3 camUp;
 uniform sampler3D uNoise;
 uniform sampler3D uNormal;
 uniform float isoLevel;
+uniform vec3 rgbColorA;
+uniform vec3 rgbColorB;
 
 //NOISE FUNCTION
 
@@ -138,10 +140,7 @@ vec3 ray_march(in vec3 ro, in vec3 rd)
             float ambient = 0.2; 
             float lighting = max(diffuse_intensity, ambient);
 
-            vec3 yellow = vec3(0.0, 0.0, 1.0);
-            vec3 red = vec3(1.0, 0.0, 0.0);
-
-            vec4 baseColor = vec4(mix(yellow/2, red*2, density), 1.0);
+            vec4 baseColor = vec4(mix(rgbColorA/2, rgbColorB*2, density), 1.0);
             return baseColor.rgb * lighting;
         }
 
@@ -157,14 +156,11 @@ void main()
     uv = uv * 2.0 - 1.0;
 	uv.x *= (1920.0 / 1080.0); 
 	
-	vec3 ro = camera_position;
+	vec3 ro = camera_position - vec3(0.0, 0.0, 1.0);
 	float focalLength = 1.5; 
     vec3 rd = normalize(camForward * focalLength + camRight * uv.x + camUp * uv.y);
 
+    light_position = camera_position;
+
 	FragColor = vec4(ray_march(ro, rd), 1.0);
 } 
-
-//Список задач
-//Отдельно заранее просчитывать нормали
-//Пропускать пустое простарнство внутри коробки
-//Хз мб еще че найду
