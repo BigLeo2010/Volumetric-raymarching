@@ -1,3 +1,11 @@
+#ifdef _WIN32
+#include <windows.h>
+extern "C" {
+	// Для видеокарт NVIDIA (Optimus)
+	__declspec(dllexport) DWORD NvOptimusEnablement = 0x00000001;
+}
+#endif
+
 // САЙТ С РАЗНЫМИ ШУМАМИ
 // http://klacansky.com/open-scivis-datasets/
 #include<iostream>

@@ -45,40 +45,11 @@ float getVolumeDensity(vec3 uvw) {
 
 //ОСВЕЩЕНИЕ
 
-/*vec3 getVolumeNormal(vec3 uvw) {
-    float delta = 0.01;
-    
-    float dx = getVolumeDensity(uvw + vec3(delta, 0.0, 0.0)) - getVolumeDensity(uvw - vec3(delta, 0.0, 0.0));
-    float dy = getVolumeDensity(uvw + vec3(0.0, delta, 0.0)) - getVolumeDensity(uvw - vec3(0.0, delta, 0.0));
-    float dz = getVolumeDensity(uvw + vec3(0.0, 0.0, delta)) - getVolumeDensity(uvw - vec3(0.0, 0.0, delta));
-    
-    return normalize(-vec3(dx, dy, dz) + vec3(1e-6)); 
-}*/
-
 vec3 getVolumeNormal(vec3 uvw) {
     vec3 encodedNormal = texture(uNormal, uvw).rgb;
     vec3 normal = encodedNormal * 2.0 - 1.0;
     return normalize(normal);
 }
-
-//ВРАЩЕНИЕ
-vec3 rotateX(vec3 p, float angle) {
-    float c = cos(angle);
-    float s = sin(angle);
-    return vec3(p.x, c * p.y - s * p.z, s * p.y + c * p.z);
-}
-
-vec3 rotateY(vec3 p, float angle) {
-    float c = cos(angle);
-    float s = sin(angle);
-    return vec3(c * p.x + s * p.z, p.y, -s * p.x + c * p.z);
-}
-vec3 rotateZ(vec3 p, float angle) {
-    float c = cos(angle);
-    float s = sin(angle);
-    return vec3(c * p.x - s * p.y, s * p.x + c * p.y, p.z);
-}
-
 
 //ОТРИСОВКА
 
@@ -86,7 +57,6 @@ vec3 light_position = vec3(0.0, 5.0, 5.0);
 
 vec3 ray_march(in vec3 ro, in vec3 rd)
 {
-	float total_distance_traveled = 0.0;
     float tNear, tFar;
 
     if (!rayAABBIntersection(ro, rd, BOX_MIN, BOX_MAX, tNear, tFar)) {
@@ -98,8 +68,6 @@ vec3 ray_march(in vec3 ro, in vec3 rd)
     float pathLength = tFar - tNear;
     const float NUM_OF_STEPS = 128;
     float STEP_SIZE = pathLength / float(NUM_OF_STEPS);
-    const float MINIMUM_HIT_DISTANCE = 0.001;
-    const float MAXIMUM_TRACE_DISTANCE = 100.0;
     
     float jitter = hash(gl_FragCoord.xy) * STEP_SIZE;
     float t = tNear + jitter;
@@ -127,7 +95,6 @@ vec3 ray_march(in vec3 ro, in vec3 rd)
                     t = mix(prev_t, t, factor);
                     p = ro + rd * t;
                     uvw = (p - BOX_MIN) / (BOX_MAX - BOX_MIN);
-                    density = getVolumeDensity(uvw);
                 }
             }
             
