@@ -3,6 +3,9 @@
 extern "C" {
 	// Для видеокарт NVIDIA (Optimus)
 	__declspec(dllexport) DWORD NvOptimusEnablement = 0x00000001;
+
+	// Для видеокарт AMD/Radeon
+	__declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
 }
 #endif
 

@@ -38,6 +38,8 @@ void Camera::Inputs(GLFWwindow* window, float deltaTime, bool canRotate) {
 	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 
+#ifdef _WIN32
+		// КОД ДЛЯ WINDOWS
 		if (firstClick) {
 			glfwSetCursorPos(window, (width / 2), (height / 2));
 			firstClick = false;
@@ -56,6 +58,29 @@ void Camera::Inputs(GLFWwindow* window, float deltaTime, bool canRotate) {
 		if (pitch < -89.0f) pitch = -89.0f;
 
 		glfwSetCursorPos(window, (width / 2), (height / 2));
+#else
+		// КОД ДЛЯ LINUX/WSL
+		double mouseX, mouseY;
+		glfwGetCursorPos(window, &mouseX, &mouseY);
+
+		if (firstClick) {
+			lastX = mouseX;
+			lastY = mouseY;
+			firstClick = false;
+		}
+
+		float offsetX = (float)(mouseX - lastX) * sensitivity;
+		float offsetY = (float)(mouseY - lastY) * sensitivity;
+
+		lastX = mouseX;
+		lastY = mouseY;
+
+		yaw += offsetX;
+		pitch += offsetY;
+
+		if (pitch > 89.0f) pitch = 89.0f;
+		if (pitch < -89.0f) pitch = -89.0f;
+#endif
 	}
 	else if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_RELEASE) {
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
@@ -64,6 +89,7 @@ void Camera::Inputs(GLFWwindow* window, float deltaTime, bool canRotate) {
 		if (canRotate) yaw += deltaTime * -20.0f;
 	}
 }
+
 
 void Camera::ProcessScroll(float yoffset) {
 	radius -= yoffset / 2;

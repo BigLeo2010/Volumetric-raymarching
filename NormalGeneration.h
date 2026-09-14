@@ -9,6 +9,7 @@
 #include<sstream>
 #include<cerrno>
 #include<vector>
+#include <cmath>
 
 struct ColorRGB {
 	uint8_t r, g, b;

@@ -27,6 +27,9 @@ public:
     int width;
     int height;
 
+    double lastX = 0.0;
+    double lastY = 0.0;
+
     float radius = 8.0f;
     float minRadius = 1.0f;
     float maxRadius = 20.0f;
