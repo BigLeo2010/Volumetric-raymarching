@@ -1,7 +1,12 @@
 #include "GUI.h"
 #include <string>
 
-float GUI::density_value = 0.5f;
+float GUI::isoMin = 0.2f;
+float GUI::isoMax = 0.9f;
+
+float GUI::clipX = 2.0f;
+float GUI::clipY = 2.0f;
+float GUI::clipZ = 2.0f;
 
 GUI::GUI() {}
 
@@ -19,7 +24,6 @@ void GUI::InitGUI(GLFWwindow* window) {
     ImGui_ImplOpenGL3_Init("#version 330");
 
     windowGUI = window;
-    density_value = 0.5f;
 }
 
 void GUI::UIInputs() {
@@ -40,10 +44,14 @@ void GUI::UIInputs() {
 }
 
 void GUI::UniformValues(Shader& shader) {
-    shader.SetFloat("isoLevel", density_value);
+    shader.SetFloat("isoMax", isoMax);
+    shader.SetFloat("isoMin", isoMin);
+	shader.SetFloat("clipX", clipX);
+    shader.SetFloat("clipY", clipY);
+    shader.SetFloat("clipZ", clipZ);
 }
 
-void GUI::CreateGUI(double fps, Texture& noise3DTexture, const std::unique_ptr<Box>& box, glm::vec3& colorA, glm::vec3& colorB, bool& canRotate) {
+void GUI::CreateGUI(double fps, Texture& noise3DTexture, glm::vec3& colorA, glm::vec3& colorB, bool& canRotate) {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
@@ -55,31 +63,19 @@ void GUI::CreateGUI(double fps, Texture& noise3DTexture, const std::unique_ptr<B
         ImGui::Text("%s", fpsTitle.c_str());
 
         ImGui::Text("Main algorithm:");
-        ImGui::SliderFloat("IsoLevel", &density_value, 0.0f, 1.0f);
+        ImGui::SliderFloat("IsoMin", &isoMin, 0.0f, 1.0f);
+        ImGui::SliderFloat("IsoMax", &isoMax, 0.0f, 1.0f);
+
+        ImGui::Text("Virtual clipper:");
+        ImGui::SliderFloat("X Axis", &clipX, -2.0f, 2.0f);
+        ImGui::SliderFloat("Y Axis", &clipY, -2.0f, 2.0f);
+        ImGui::SliderFloat("Z Axis", &clipZ, -2.0f, 2.0f);
 
         ImGui::Checkbox("Rotate scan", &canRotate);
 
         ImGui::Text("Color:");
         ImGui::ColorEdit3("A", &colorA.r);
         ImGui::ColorEdit3("B", &colorB.r);
-
-        ImGui::Text("Noise:");
-        ImGui::SliderFloat("Frequency", &box->frequency, 0.0f, 2.0f);
-        ImGui::SliderFloat("Amplitude", &box->amplitude, 0.0f, 2.0f);
-
-        if (ImGui::Button("Apply adjustments"))
-        {
-            box->FillGrid();
-
-            noise3DTexture.Update(
-                &box->grid[0][0][0],
-                Box::GRID_X,
-                Box::GRID_Y,
-                Box::GRID_X,
-                GL_RED,
-                GL_FLOAT
-            );
-        }
 
         ImGui::End();
     }

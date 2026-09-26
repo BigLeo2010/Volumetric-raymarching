@@ -170,6 +170,7 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Box.h" />
     <ClInclude Include="GUI.h" />
+    <ClInclude Include="Launcher.h" />
     <ClInclude Include="Libraries\external\Imgui\backends\imgui_impl_glfw.h" />
     <ClInclude Include="Libraries\external\Imgui\backends\imgui_impl_opengl3.h" />
     <ClInclude Include="Libraries\external\Imgui\backends\imgui_impl_opengl3_loader.h" />
@@ -191,6 +192,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Box.cpp" />
     <ClCompile Include="GUI.cpp" />
+    <ClCompile Include="Launcher.cpp" />
     <ClCompile Include="Libraries\external\Imgui\backends\imgui_impl_glfw.cpp" />
     <ClCompile Include="Libraries\external\Imgui\backends\imgui_impl_opengl3.cpp" />
     <ClCompile Include="Libraries\external\Imgui\imgui.cpp" />

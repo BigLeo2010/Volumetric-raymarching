@@ -10,9 +10,14 @@ uniform vec3 camRight;
 uniform vec3 camUp;
 uniform sampler3D uNoise;
 uniform sampler3D uNormal;
-uniform float isoLevel;
+uniform float isoMin;
+uniform float isoMax;
 uniform vec3 rgbColorA;
 uniform vec3 rgbColorB;
+
+uniform float clipX;
+uniform float clipY;
+uniform float clipZ;
 
 //NOISE FUNCTION
 
@@ -77,11 +82,17 @@ vec3 ray_march(in vec3 ro, in vec3 rd)
         if (t > tFar) break;
 
         vec3 p = ro + rd * t;
+
+        if (p.x > clipX || p.y > clipY || p.z > clipZ) {
+            t += STEP_SIZE;
+            continue;
+        }
+
         vec3 uvw = (p - BOX_MIN) / (BOX_MAX - BOX_MIN);
 
         float density = getVolumeDensity(uvw);
 
-        if (density >= isoLevel) {
+        if (density >= isoMin && density <= isoMax) {
             //Интерполяция
             if (i > 0) {
                 float prev_t = t - STEP_SIZE;
@@ -91,7 +102,7 @@ vec3 ray_march(in vec3 ro, in vec3 rd)
                 
                 float deltaDensity = density - prev_density;
                 if (abs(deltaDensity) > 1e-5) {
-                    float factor = (isoLevel - prev_density) / deltaDensity;
+                    float factor = (isoMin - prev_density) / deltaDensity;
                     t = mix(prev_t, t, factor);
                     p = ro + rd * t;
                     uvw = (p - BOX_MIN) / (BOX_MAX - BOX_MIN);

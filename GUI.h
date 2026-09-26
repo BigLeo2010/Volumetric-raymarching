@@ -15,13 +15,18 @@ class GUI {
 public:
 	ImGuiIO* io = nullptr;
 	GLFWwindow* windowGUI = nullptr;
-	static float density_value;
+	static float isoMin;
+	static float isoMax;
+
+	static float clipX;
+	static float clipY;
+	static float clipZ;
 
 	GUI();
 	void InitGUI(GLFWwindow* window);
 	void UIInputs();
 	void UniformValues(Shader& shader);
-	void CreateGUI(double fps, Texture& noise3DTexture, const std::unique_ptr<Box>& box, glm::vec3& colorA, glm::vec3& colorB, bool& canRotate);
+	void CreateGUI(double fps, Texture& noise3DTexture, glm::vec3& colorA, glm::vec3& colorB, bool& canRotate);
 	void Render();
 	~GUI();
 };
