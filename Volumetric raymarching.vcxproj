@@ -169,8 +169,10 @@
   <ItemGroup>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Box.h" />
+    <ClInclude Include="Engine.h" />
     <ClInclude Include="GUI.h" />
     <ClInclude Include="Launcher.h" />
+    <ClInclude Include="LauncherGUI.h" />
     <ClInclude Include="Libraries\external\Imgui\backends\imgui_impl_glfw.h" />
     <ClInclude Include="Libraries\external\Imgui\backends\imgui_impl_opengl3.h" />
     <ClInclude Include="Libraries\external\Imgui\backends\imgui_impl_opengl3_loader.h" />
@@ -191,8 +193,10 @@
     <ClCompile Include="C:\Users\lamba\Desktop\glad\src\glad.c" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Box.cpp" />
+    <ClCompile Include="Engine.cpp" />
     <ClCompile Include="GUI.cpp" />
     <ClCompile Include="Launcher.cpp" />
+    <ClCompile Include="LauncherGUI.cpp" />
     <ClCompile Include="Libraries\external\Imgui\backends\imgui_impl_glfw.cpp" />
     <ClCompile Include="Libraries\external\Imgui\backends\imgui_impl_opengl3.cpp" />
     <ClCompile Include="Libraries\external\Imgui\imgui.cpp" />
@@ -211,6 +215,7 @@
   <ItemGroup>
     <None Include="default.frag" />
     <None Include="default.vert" />
+    <None Include="launcher.frag" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

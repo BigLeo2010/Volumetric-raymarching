@@ -81,6 +81,12 @@
     <ClInclude Include="Launcher.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="Engine.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="LauncherGUI.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp">
@@ -140,12 +146,21 @@
     <ClCompile Include="Launcher.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="Engine.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="LauncherGUI.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="default.frag">
       <Filter>Файлы ресурсов\Shaders</Filter>
     </None>
     <None Include="default.vert">
+      <Filter>Файлы ресурсов\Shaders</Filter>
+    </None>
+    <None Include="launcher.frag">
       <Filter>Файлы ресурсов\Shaders</Filter>
     </None>
   </ItemGroup>

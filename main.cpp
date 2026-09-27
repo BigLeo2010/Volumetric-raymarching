@@ -28,6 +28,7 @@ extern "C" {
 #include"GUI.h"
 #include"NormalGeneration.h"
 #include"Launcher.h"
+#include"Engine.h"
 
 GLfloat vertices[] = {
 	// Первый треугольник
@@ -41,6 +42,11 @@ GLfloat vertices[] = {
 	 -1.0f, -1.0f, 0.0f   // 1. Низ-лево
 };
 
+void change_window_size(GLFWwindow* window, int width, int height) {
+	glfwSetWindowSize(window, width, height);
+	glViewport(0, 0, width, height);
+}
+
 int main() 
 {
 	system("chcp 1251 > nul"); // Локализация вывода консоли (кодовая страница Windows-1251)
@@ -52,8 +58,8 @@ int main()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); // Отсечение deprecated-функционала
 
-	int WIDTH = 1920;
-	int HEIGHT = 1080;
+	int WIDTH = 800;
+	int HEIGHT = 600;
 
 	GLfloat backgroundColor[] = { 45.0f/255.0f, 45.0f / 255.0f, 45.0f / 255.0f }; // Нормализованные RGBA значения цвета очистки
 
@@ -72,11 +78,27 @@ int main()
 
 	glViewport(0, 0, WIDTH, HEIGHT);
 
+
+	/* ВОТ ЭТУ ХУЙНЮ НЕ ТРОГАТЬ */
+
 	// Инициализация графического конвейера (компиляция и линковка шейдеров)
 	Shader shaderProgram("default.vert", "default.frag");
+	Shader launcherShader("default.vert", "launcher.frag");
 
-	Launcher launcher;
-	launcher.Load(window, vertices, sizeof(vertices), shaderProgram);
+	VAO VAO1;
+	VBO VBO1(vertices, sizeof(vertices));
+
+	VAO1.Bind();  // Активация VAO для записи последующих конфигураций буферов
+
+	VAO1.LinkAttrib(VBO1, 0, 3, GL_FLOAT, 3 * sizeof(float), (void*)0);
+
+	VAO1.Unbind(); // Сброс состояния VAO (защита от непреднамеренной мутации стейта)
+	VBO1.Unbind(); // Развязка GL_ARRAY_BUFFER
+
+	/* ВСЕ, МОЖНО ТРОГАТЬ ДАЛЬШЕ */
+
+	Launcher engine;
+	engine.Load(window, shaderProgram, VAO1, VBO1);
 
 	double lastTime = glfwGetTime();
 	double lastTimeFPS = glfwGetTime();
@@ -87,7 +109,7 @@ int main()
 	{
 		glfwPollEvents();
 
-		launcher.UIRender(fps);
+		engine.UIRender();
 
 		glClearColor(backgroundColor[0], backgroundColor[1], backgroundColor[2], 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
@@ -105,17 +127,15 @@ int main()
 			lastTimeFPS += 1.0;
 		}
 
-		launcher.CameraRender(window, deltaTime);
+		//engine.CameraRender(window, deltaTime);
 
 		shaderProgram.Activate(); // Инжект шейдерной программы в текущий пайплайн
 
 		shaderProgram.SetFloat("time", (float)glfwGetTime());
 
-		launcher.Render(shaderProgram);
-
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 
-		launcher.UIEnd(shaderProgram);
+		engine.UIEnd(shaderProgram);
 
 		glfwSwapBuffers(window);
 	}
