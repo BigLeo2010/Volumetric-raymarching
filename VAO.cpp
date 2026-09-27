@@ -27,6 +27,6 @@ void VAO::Unbind() {
 }
 
 // Метод для очистки памяти
-void VAO::Delete() {
+VAO::~VAO() {
 	glDeleteVertexArrays(1, &ID); // Удаляем VAO с видеокарты
 }

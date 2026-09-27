@@ -72,8 +72,8 @@ void Engine::Load(GLFWwindow* window, Shader& shaderProgram, VAO& vao, VBO& vbo)
 	);
 
 	normalTexture->texIUnit(shaderProgram, "uNormal", 1);
-
-	settings.InitGUI(window);
+	
+	//settings.InitGUI(window);
 }
 
 void Engine::UIRender(double fps) {
@@ -114,8 +114,17 @@ void Engine::UIEnd(Shader& shaderProgram) {
 }
 
 Engine::~Engine() {
-	teapotTexture->Delete();
-	normalTexture->Delete();
-	VAO1->Delete();
-	VBO1->Delete();
+	if (teapotTexture) {
+		teapotTexture->Delete();
+		delete teapotTexture;
+	}
+	if (normalTexture) {
+		normalTexture->Delete();
+		delete normalTexture;
+	}
+
+	if (pCamera) {
+		delete pCamera;
+		pCamera = nullptr;
+	}
 }

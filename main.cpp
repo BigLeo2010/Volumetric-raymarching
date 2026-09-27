@@ -43,9 +43,41 @@ GLfloat vertices[] = {
 };
 
 void change_window_size(GLFWwindow* window, int width, int height) {
+	GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+	if (monitor) {
+		const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+		if (mode) {
+			if (width >= mode->width || height >= mode->height) {
+				glfwMaximizeWindow(window);
+
+				int display_w, display_h;
+				glfwGetFramebufferSize(window, &display_w, &display_h);
+				glViewport(0, 0, display_w, display_h);
+				return;
+			}
+		}
+	}
+
 	glfwSetWindowSize(window, width, height);
 	glViewport(0, 0, width, height);
+
+	if (monitor) {
+		int monitor_x, monitor_y, monitor_width, monitor_height;
+		glfwGetMonitorWorkarea(monitor, &monitor_x, &monitor_y, &monitor_width, &monitor_height);
+
+		int frame_left, frame_top, frame_right, frame_bottom;
+		glfwGetWindowFrameSize(window, &frame_left, &frame_top, &frame_right, &frame_bottom);
+
+		int full_window_width = width + frame_left + frame_right;
+		int full_window_height = height + frame_top + frame_bottom;
+
+		int new_x = monitor_x + (monitor_width - full_window_width) / 2;
+		int new_y = monitor_y + (monitor_height - full_window_height) / 2;
+
+		glfwSetWindowPos(window, new_x, new_y);
+	}
 }
+
 
 int main() 
 {
@@ -58,13 +90,13 @@ int main()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); // Отсечение deprecated-функционала
 
-	int WIDTH = 800;
-	int HEIGHT = 600;
-
 	GLfloat backgroundColor[] = { 45.0f/255.0f, 45.0f / 255.0f, 45.0f / 255.0f }; // Нормализованные RGBA значения цвета очистки
 
+	Launcher launcher;
+	Engine engine;
+
 	// Инстанцирование объекта окна и создание ассоциированного контекста OpenGL
-	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Volumetric Raymarching", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(launcher.WIDTH, launcher.HEIGHT, "Volumetric Raymarching", NULL, NULL);
 
 	if (window == NULL) {
 		std::cout << "Failed to create a window" << std::endl;
@@ -76,7 +108,7 @@ int main()
 
 	gladLoadGL(); // Динамическая загрузка указателей на функции API OpenGL через GLAD
 
-	glViewport(0, 0, WIDTH, HEIGHT);
+	glViewport(0, 0, launcher.WIDTH, launcher.HEIGHT);
 
 
 	/* ВОТ ЭТУ ХУЙНЮ НЕ ТРОГАТЬ */
@@ -97,19 +129,27 @@ int main()
 
 	/* ВСЕ, МОЖНО ТРОГАТЬ ДАЛЬШЕ */
 
-	Launcher engine;
-	engine.Load(window, shaderProgram, VAO1, VBO1);
+	launcher.Load(window, launcherShader, VAO1, VBO1);
 
 	double lastTime = glfwGetTime();
 	double lastTimeFPS = glfwGetTime();
 	int nbFrames = 0;
 	double fps = 0;
 
+	bool engineHasLoaded = false;
+
 	while (!glfwWindowShouldClose(window))
 	{
 		glfwPollEvents();
 
-		engine.UIRender();
+		if (engine.isActive) engine.UIRender(fps);
+		else launcher.UIRender(engine.isActive);
+
+		if (engine.isActive && !engineHasLoaded) {
+			engineHasLoaded = true;
+			engine.Load(window, shaderProgram, VAO1, VBO1);
+			change_window_size(window, engine.WIDTH, engine.HEIGHT);
+		}
 
 		glClearColor(backgroundColor[0], backgroundColor[1], backgroundColor[2], 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
@@ -127,19 +167,31 @@ int main()
 			lastTimeFPS += 1.0;
 		}
 
-		//engine.CameraRender(window, deltaTime);
+		if (engine.isActive)
+		{
+			engine.CameraRender(window, deltaTime);
 
-		shaderProgram.Activate(); // Инжект шейдерной программы в текущий пайплайн
+			shaderProgram.Activate(); // Инжект шейдерной программы в текущий пайплайн
 
-		shaderProgram.SetFloat("time", (float)glfwGetTime());
+			engine.Render(shaderProgram);
+
+			shaderProgram.SetFloat("time", (float)glfwGetTime());
+		}
+		else {
+			launcherShader.Activate();
+			launcher.Render(launcherShader);
+			launcherShader.SetFloat("time", (float)glfwGetTime());
+		}
 
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 
-		engine.UIEnd(shaderProgram);
+		if (engine.isActive) engine.UIEnd(shaderProgram);
+		else launcher.UIEnd(launcherShader);
 
 		glfwSwapBuffers(window);
 	}
 	
+	launcherShader.Delete();
 	shaderProgram.Delete();
 
 	glfwDestroyWindow(window); // Уничтожение дескриптора окна

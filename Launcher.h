@@ -20,19 +20,18 @@
 
 class Launcher {
 private:
-	int WIDTH = 800;
-	int HEIGHT = 600;
-
 	VAO* VAO1;
 	VBO* VBO1;
 
 	LauncherGUI settings;
 public:
+	int WIDTH = 800;
+	int HEIGHT = 600;
+
 	void Load(GLFWwindow* window, Shader& shaderProgram, VAO& vao, VBO& vbo);
-	void UIRender();
+	void UIRender(bool& isActive);
 	void Render(Shader& shaderProgram);
 	void UIEnd(Shader& shaderProgram);
-	~Launcher();
 };
 
 #endif

@@ -20,7 +20,7 @@ public:
 	void InitGUI(GLFWwindow* window);
 	void UIInputs();
 	void UniformValues(Shader& shader);
-	void CreateGUI();
+	void CreateGUI(bool& isActive);
 	void Render();
 	~LauncherGUI();
 };

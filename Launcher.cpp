@@ -7,9 +7,9 @@ void Launcher::Load(GLFWwindow* window, Shader& shaderProgram, VAO& vao, VBO& vb
 	settings.InitGUI(window);
 }
 
-void Launcher::UIRender() {
+void Launcher::UIRender(bool& isActive) {
 	settings.UIInputs();
-	settings.CreateGUI();
+	settings.CreateGUI(isActive);
 }
 
 void Launcher::Render(Shader& shaderProgram) {
@@ -19,9 +19,4 @@ void Launcher::Render(Shader& shaderProgram) {
 void Launcher::UIEnd(Shader& shaderProgram) {
 	settings.Render();
 	settings.UniformValues(shaderProgram);
-}
-
-Launcher::~Launcher() {
-	VAO1->Delete();
-	VBO1->Delete();
 }

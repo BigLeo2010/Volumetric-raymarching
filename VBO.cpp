@@ -18,6 +18,6 @@ void VBO::Unbind() {
 }
 
 // Метод для очистки памяти
-void VBO::Delete() {
+VBO::~VBO() {
 	glDeleteBuffers(1, &ID); // Удаляем буфер вершин с видеокарты
 }

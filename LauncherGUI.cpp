@@ -11,7 +11,11 @@ void LauncherGUI::InitGUI(GLFWwindow* window) {
 
     io->ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 
-    ImGui::StyleColorsDark();
+    ImGuiStyle& style = ImGui::GetStyle();
+
+    style.Colors[ImGuiCol_Button] = ImVec4(0.20f, 0.40f, 0.80f, 1.00f);
+    style.Colors[ImGuiCol_ButtonHovered] = ImVec4(0.30f, 0.50f, 0.90f, 1.00f);
+    style.Colors[ImGuiCol_ButtonActive] = ImVec4(0.15f, 0.35f, 0.70f, 1.00f);
 
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init("#version 330");
@@ -40,20 +44,34 @@ void LauncherGUI::UniformValues(Shader& shader) {
 
 }
 
-void LauncherGUI::CreateGUI() {
+void LauncherGUI::CreateGUI(bool& isActive) {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
 
+    if (!windowGUI || !io) return;
+
+    ImGui::SetNextWindowPos(ImVec2(275, 250), ImGuiCond_Always);
+    ImGui::SetNextWindowSize(ImVec2(250,100), ImGuiCond_Always);
+
+    ImGuiWindowFlags window_flags =
+        ImGuiWindowFlags_NoTitleBar |       // Убираем заголовок
+        ImGuiWindowFlags_NoResize |         // Запрещаем менять размер
+        ImGuiWindowFlags_NoMove |           // Запрещаем двигать окно
+        ImGuiWindowFlags_NoScrollbar |      // Убираем скроллбары
+        ImGuiWindowFlags_NoBackground |     // Полностью прозрачный фон
+        ImGuiWindowFlags_NoCollapse |       // Запрещаем сворачивать
+        ImGuiWindowFlags_NoSavedSettings;   // Игнорируем imgui.ini
+
+    if (ImGui::Begin("LauncherContainer", nullptr, window_flags))
     {
-        ImGui::Begin("Launcher");
-
-        ImGui::Text("CLICK START BLYAT");
-        ImGui::Button("CLICK START BLYAT", ImVec2(200, 80));
-
-        ImGui::End();
+        if (ImGui::Button("START", ImVec2(-1, -1))) {
+            isActive = true;
+        }
     }
+    ImGui::End();
 }
+
 
 void LauncherGUI::Render() {
     ImGui::Render();

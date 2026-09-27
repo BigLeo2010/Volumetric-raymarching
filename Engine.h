@@ -21,8 +21,6 @@
 class Engine {
 private:
 	static Camera* pCamera;
-	int WIDTH = 800;
-	int HEIGHT = 600;
 
 	VAO* VAO1;
 	VBO* VBO1;
@@ -37,6 +35,8 @@ private:
 	static bool rotate;
 public:
 	bool isActive = false;
+	int WIDTH = 1920;
+	int HEIGHT = 1080;
 
 	static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 	void Load(GLFWwindow* window, Shader& shaderProgram, VAO& vao, VBO& vbo);

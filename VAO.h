@@ -13,7 +13,7 @@ public:
 	void LinkAttrib(VBO& VBO, GLuint layout, GLuint numComponents, GLenum type, GLsizeiptr stribe, void* offset);
 	void Bind(); // Включить этот VAO
 	void Unbind(); // Выключить (отвязать) этот VAO
-	void Delete(); // Удалить VAO из памяти видеокарты
+	~VAO(); // Удалить VAO из памяти видеокарты
 };
 
 #endif
