@@ -87,6 +87,9 @@
     <ClInclude Include="LauncherGUI.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="portable-file-dialogs.h">
+      <Filter>Файлы ресурсов\Imgui</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp">

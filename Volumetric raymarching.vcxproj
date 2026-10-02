@@ -183,6 +183,7 @@
     <ClInclude Include="Libraries\external\Imgui\imstb_textedit.h" />
     <ClInclude Include="Libraries\external\Imgui\imstb_truetype.h" />
     <ClInclude Include="NormalGeneration.h" />
+    <ClInclude Include="portable-file-dialogs.h" />
     <ClInclude Include="shaderClass.h" />
     <ClInclude Include="SimplexNoise.h" />
     <ClInclude Include="Texture.h" />

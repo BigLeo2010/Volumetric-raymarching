@@ -1,5 +1,6 @@
 #include "LauncherGUI.h"
 #include <string>
+#include "portable-file-dialogs.h"
 
 LauncherGUI::LauncherGUI() {}
 
@@ -45,11 +46,11 @@ void LauncherGUI::UniformValues(Shader& shader) {
 }
 
 void LauncherGUI::CreateGUI(bool& isActive) {
+    if (!windowGUI || !io) return;
+
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
-
-    if (!windowGUI || !io) return;
 
     ImGui::SetNextWindowPos(ImVec2(275, 250), ImGuiCond_Always);
     ImGui::SetNextWindowSize(ImVec2(250,100), ImGuiCond_Always);
@@ -65,10 +66,36 @@ void LauncherGUI::CreateGUI(bool& isActive) {
 
     if (ImGui::Begin("LauncherContainer", nullptr, window_flags))
     {
+        // Буфер для хранения пути к файлу (сохраняет состояние между кадрами)
+        static char filePath[512] = "";
+
+        // Поле ввода пути (займет большую часть ширины)
+        ImGui::PushItemWidth(200.0f);
+        ImGui::InputText("##PathInput", filePath, IM_ARRAYSIZE(filePath));
+        ImGui::PopItemWidth();
+
+        ImGui::SameLine();
+
+        // Кнопка вызова проводника
+        if (ImGui::Button("Обзор...")) {
+            // Вызываем кроссплатформенный диалог выбора файла через portable-file-dialogs
+            auto selection = pfd::open_file("Выберите файл", ".",
+                { "Все файлы", "*" }).result();
+
+            // Если пользователь выбрал файл и не закрыл окно крестиком
+            if (!selection.empty()) {
+                // Копируем путь в наш char-массив безопасным методом
+                strcpy_s(filePath, selection[0].c_str());
+            }
+        }
+
+        ImGui::Spacing(); // Небольшой отступ перед кнопкой СТАРТ
+
         if (ImGui::Button("START", ImVec2(-1, -1))) {
             isActive = true;
         }
     }
+
     ImGui::End();
 }
 

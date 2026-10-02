@@ -15,6 +15,7 @@ class LauncherGUI {
 public:
 	ImGuiIO* io = nullptr;
 	GLFWwindow* windowGUI = nullptr;
+	static char filePath[512];
 
 	LauncherGUI();
 	void InitGUI(GLFWwindow* window);
