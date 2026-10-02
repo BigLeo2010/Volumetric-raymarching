@@ -1,4 +1,5 @@
 #include "Engine.h"
+#include <algorithm>
 
 Camera* Engine::pCamera = nullptr;
 glm::vec3 Engine::rgbColorA = glm::vec3(0.0f, 0.0f, 1.0f);
@@ -11,7 +12,7 @@ void Engine::scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 	}
 }
 
-void Engine::Load(GLFWwindow* window, Shader& shaderProgram, VAO& vao, VBO& vbo) {
+void Engine::Load(GLFWwindow* window, Shader& shaderProgram, VAO& vao, VBO& vbo, char path[], const int sizeX, const int sizeY, const int sizeZ) {
 	pCamera = new Camera(1920, 1080, glm::vec3(0.0f, 0.0f, 0.0f));
 
 	// Регистрируем коллбэк в GLFW
@@ -20,11 +21,7 @@ void Engine::Load(GLFWwindow* window, Shader& shaderProgram, VAO& vao, VBO& vbo)
 	VAO1 = &vao;
 	VBO1 = &vbo;
 
-	const int teapotW = 256;
-	const int teapotH = 256;
-	const int teapotD = 124;
-
-	std::vector<uint8_t> rawBuffer(teapotW * teapotH * teapotD);
+	std::vector<uint8_t> rawBuffer(sizeX * sizeY * sizeZ);
 
 	//FILE NAMES:
 	//mri_ventricles_256x256x124_uint8.raw HEAD MRI
@@ -34,7 +31,7 @@ void Engine::Load(GLFWwindow* window, Shader& shaderProgram, VAO& vao, VBO& vbo)
 	//my_spine_volume.raw 1024*1024*29
 	//ircad_patient_1.raw 512*512*111
 
-	std::ifstream file("mri_ventricles_256x256x124_uint8.raw", std::ios::binary);
+	std::ifstream file(path, std::ios::binary);
 
 	/*if (!file.is_open()) {
 		std::cerr << "КРИТИЧЕСКАЯ ОШИБКА: Не удалось открыть файл" << std::endl;
@@ -44,7 +41,7 @@ void Engine::Load(GLFWwindow* window, Shader& shaderProgram, VAO& vao, VBO& vbo)
 	file.read(reinterpret_cast<char*>(rawBuffer.data()), rawBuffer.size());
 	file.close();
 
-	const int targetSize = 256;
+	const int targetSize = std::max({sizeX, sizeY, sizeZ});
 	std::vector<uint8_t> cubeBuffer(targetSize * targetSize * targetSize, 0);
 
 	std::copy(rawBuffer.begin(), rawBuffer.end(), cubeBuffer.begin());

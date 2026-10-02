@@ -39,7 +39,7 @@ public:
 	int HEIGHT = 1080;
 
 	static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
-	void Load(GLFWwindow* window, Shader& shaderProgram, VAO& vao, VBO& vbo);
+	void Load(GLFWwindow* window, Shader& shaderProgram, VAO& vao, VBO& vbo, char path[], const int sizeX, const int sizeY, const int sizeZ);
 	void UIRender(double fps);
 	void CameraRender(GLFWwindow* window, float deltaTime);
 	void Render(Shader& shaderProgram);

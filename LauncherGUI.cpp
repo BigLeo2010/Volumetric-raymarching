@@ -45,6 +45,18 @@ void LauncherGUI::UniformValues(Shader& shader) {
 
 }
 
+void sizeInput(int* size, const char name[], const char ID[]) {
+    ImGui::Spacing();
+
+    ImGui::Text(name);
+
+    ImGui::SameLine();
+
+    ImGui::PushItemWidth(80.0f);
+    ImGui::InputInt(ID, size);
+    ImGui::PopItemWidth();
+}
+
 void LauncherGUI::CreateGUI(bool& isActive) {
     if (!windowGUI || !io) return;
 
@@ -52,8 +64,8 @@ void LauncherGUI::CreateGUI(bool& isActive) {
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
 
-    ImGui::SetNextWindowPos(ImVec2(275, 250), ImGuiCond_Always);
-    ImGui::SetNextWindowSize(ImVec2(250,100), ImGuiCond_Always);
+    ImGui::SetNextWindowPos(ImVec2(70, 150), ImGuiCond_Always);
+    ImGui::SetNextWindowSize(ImVec2(300,300), ImGuiCond_Always);
 
     ImGuiWindowFlags window_flags =
         ImGuiWindowFlags_NoTitleBar |       // Убираем заголовок
@@ -66,32 +78,29 @@ void LauncherGUI::CreateGUI(bool& isActive) {
 
     if (ImGui::Begin("LauncherContainer", nullptr, window_flags))
     {
-        // Буфер для хранения пути к файлу (сохраняет состояние между кадрами)
-        static char filePath[512] = "";
-
-        // Поле ввода пути (займет большую часть ширины)
-        ImGui::PushItemWidth(200.0f);
+        ImGui::PushItemWidth(150.0f);
         ImGui::InputText("##PathInput", filePath, IM_ARRAYSIZE(filePath));
         ImGui::PopItemWidth();
 
         ImGui::SameLine();
 
-        // Кнопка вызова проводника
-        if (ImGui::Button("Обзор...")) {
-            // Вызываем кроссплатформенный диалог выбора файла через portable-file-dialogs
+        if (ImGui::Button("View...")) {
             auto selection = pfd::open_file("Выберите файл", ".",
-                { "Все файлы", "*" }).result();
+                { "Файлы объёмных данных (.raw)", "*.raw",
+                  "Все файлы", "*" }).result();
 
-            // Если пользователь выбрал файл и не закрыл окно крестиком
             if (!selection.empty()) {
-                // Копируем путь в наш char-массив безопасным методом
                 strcpy_s(filePath, selection[0].c_str());
             }
         }
+        
+        sizeInput(&sizeX, "X: ", "##SizeX");
+        sizeInput(&sizeY, "Y: ", "##SizeY");
+        sizeInput(&sizeZ, "Z: ", "##SizeZ");
 
-        ImGui::Spacing(); // Небольшой отступ перед кнопкой СТАРТ
+        ImGui::Spacing();
 
-        if (ImGui::Button("START", ImVec2(-1, -1))) {
+        if (ImGui::Button("START", ImVec2(-1, -1)) && std::string(filePath) != "") {
             isActive = true;
         }
     }

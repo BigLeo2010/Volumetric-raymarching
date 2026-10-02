@@ -22,11 +22,11 @@ class Launcher {
 private:
 	VAO* VAO1;
 	VBO* VBO1;
-
-	LauncherGUI settings;
 public:
 	int WIDTH = 800;
 	int HEIGHT = 600;
+
+	LauncherGUI settings;
 
 	void Load(GLFWwindow* window, Shader& shaderProgram, VAO& vao, VBO& vbo);
 	void UIRender(bool& isActive);

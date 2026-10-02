@@ -147,7 +147,8 @@ int main()
 
 		if (engine.isActive && !engineHasLoaded) {
 			engineHasLoaded = true;
-			engine.Load(window, shaderProgram, VAO1, VBO1);
+			engine.Load(window, shaderProgram, VAO1, VBO1, launcher.settings.filePath, launcher.settings.sizeX,
+				launcher.settings.sizeY, launcher.settings.sizeZ);
 			change_window_size(window, engine.WIDTH, engine.HEIGHT);
 		}
 
