@@ -78,13 +78,7 @@
     <ClInclude Include="NormalGeneration.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="Launcher.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
     <ClInclude Include="Engine.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="LauncherGUI.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="portable-file-dialogs.h">
@@ -105,9 +99,6 @@
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="VBO.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="C:\Users\lamba\Desktop\glad\src\glad.c">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="SimplexNoise.cpp">
@@ -146,13 +137,10 @@
     <ClCompile Include="NormalGeneration.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="Launcher.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
     <ClCompile Include="Engine.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="LauncherGUI.cpp">
+    <ClCompile Include="glad.c">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
@@ -161,9 +149,6 @@
       <Filter>Файлы ресурсов\Shaders</Filter>
     </None>
     <None Include="default.vert">
-      <Filter>Файлы ресурсов\Shaders</Filter>
-    </None>
-    <None Include="launcher.frag">
       <Filter>Файлы ресурсов\Shaders</Filter>
     </None>
   </ItemGroup>

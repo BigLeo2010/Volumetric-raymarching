@@ -12,7 +12,7 @@ void Engine::scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 	}
 }
 
-void Engine::Load(GLFWwindow* window, Shader& shaderProgram, VAO& vao, VBO& vbo, char path[], const int sizeX, const int sizeY, const int sizeZ) {
+void Engine::Load(GLFWwindow* window, Shader& shaderProgram, VAO& vao, VBO& vbo, const char path[], const int sizeX, const int sizeY, const int sizeZ) {
 	pCamera = new Camera(1920, 1080, glm::vec3(0.0f, 0.0f, 0.0f));
 
 	// Регистрируем коллбэк в GLFW
@@ -70,7 +70,7 @@ void Engine::Load(GLFWwindow* window, Shader& shaderProgram, VAO& vao, VBO& vbo,
 
 	normalTexture->texIUnit(shaderProgram, "uNormal", 1);
 	
-	//settings.InitGUI(window);
+	settings.InitGUI(window);
 }
 
 void Engine::UIRender(double fps) {

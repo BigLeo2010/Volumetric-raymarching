@@ -34,12 +34,11 @@ private:
 	static glm::vec3 rgbColorB;
 	static bool rotate;
 public:
-	bool isActive = false;
 	int WIDTH = 1920;
 	int HEIGHT = 1080;
 
 	static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
-	void Load(GLFWwindow* window, Shader& shaderProgram, VAO& vao, VBO& vbo, char path[], const int sizeX, const int sizeY, const int sizeZ);
+	void Load(GLFWwindow* window, Shader& shaderProgram, VAO& vao, VBO& vbo, const char path[], const int sizeX, const int sizeY, const int sizeZ);
 	void UIRender(double fps);
 	void CameraRender(GLFWwindow* window, float deltaTime);
 	void Render(Shader& shaderProgram);

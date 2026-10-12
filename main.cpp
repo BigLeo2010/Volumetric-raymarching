@@ -27,7 +27,6 @@ extern "C" {
 #include"Box.h"
 #include"GUI.h"
 #include"NormalGeneration.h"
-#include"Launcher.h"
 #include"Engine.h"
 
 GLfloat vertices[] = {
@@ -85,18 +84,17 @@ int main()
 
 	glfwInit(); // Инициализация подсистемы GLFW
 
-	// Конфигурация контекста дескриптора окна (OpenGL 3.3 Core Profile)
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	// Конфигурация контекста дескриптора окна (OpenGL 4.3 Core Profile)
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); // Отсечение deprecated-функционала
 
 	GLfloat backgroundColor[] = { 45.0f/255.0f, 45.0f / 255.0f, 45.0f / 255.0f }; // Нормализованные RGBA значения цвета очистки
 
-	Launcher launcher;
 	Engine engine;
 
 	// Инстанцирование объекта окна и создание ассоциированного контекста OpenGL
-	GLFWwindow* window = glfwCreateWindow(launcher.WIDTH, launcher.HEIGHT, "Volumetric Raymarching", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(engine.WIDTH, engine.HEIGHT, "Volumetric Raymarching", NULL, NULL);
 
 	if (window == NULL) {
 		std::cout << "Failed to create a window" << std::endl;
@@ -108,14 +106,13 @@ int main()
 
 	gladLoadGL(); // Динамическая загрузка указателей на функции API OpenGL через GLAD
 
-	glViewport(0, 0, launcher.WIDTH, launcher.HEIGHT);
+	glViewport(0, 0, engine.WIDTH, engine.HEIGHT);
 
 
 	/* ВОТ ЭТУ ХУЙНЮ НЕ ТРОГАТЬ */
 
 	// Инициализация графического конвейера (компиляция и линковка шейдеров)
 	Shader shaderProgram("default.vert", "default.frag");
-	Shader launcherShader("default.vert", "launcher.frag");
 
 	VAO VAO1;
 	VBO VBO1(vertices, sizeof(vertices));
@@ -129,7 +126,8 @@ int main()
 
 	/* ВСЕ, МОЖНО ТРОГАТЬ ДАЛЬШЕ */
 
-	launcher.Load(window, launcherShader, VAO1, VBO1);
+	std::string path = "mri_ventricles_256x256x124_uint8.raw";
+	engine.Load(window, shaderProgram, VAO1, VBO1, path.c_str(), 256, 256, 124);
 
 	double lastTime = glfwGetTime();
 	double lastTimeFPS = glfwGetTime();
@@ -142,15 +140,7 @@ int main()
 	{
 		glfwPollEvents();
 
-		if (engine.isActive) engine.UIRender(fps);
-		else launcher.UIRender(engine.isActive);
-
-		if (engine.isActive && !engineHasLoaded) {
-			engineHasLoaded = true;
-			engine.Load(window, shaderProgram, VAO1, VBO1, launcher.settings.filePath, launcher.settings.sizeX,
-				launcher.settings.sizeY, launcher.settings.sizeZ);
-			change_window_size(window, engine.WIDTH, engine.HEIGHT);
-		}
+		engine.UIRender(fps);
 
 		glClearColor(backgroundColor[0], backgroundColor[1], backgroundColor[2], 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
@@ -168,31 +158,21 @@ int main()
 			lastTimeFPS += 1.0;
 		}
 
-		if (engine.isActive)
-		{
-			engine.CameraRender(window, deltaTime);
+		engine.CameraRender(window, deltaTime);
 
-			shaderProgram.Activate(); // Инжект шейдерной программы в текущий пайплайн
+		shaderProgram.Activate(); // Инжект шейдерной программы в текущий пайплайн
 
-			engine.Render(shaderProgram);
+		engine.Render(shaderProgram);
 
-			shaderProgram.SetFloat("time", (float)glfwGetTime());
-		}
-		else {
-			launcherShader.Activate();
-			launcher.Render(launcherShader);
-			launcherShader.SetFloat("time", (float)glfwGetTime());
-		}
+		shaderProgram.SetFloat("time", (float)glfwGetTime());
 
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 
-		if (engine.isActive) engine.UIEnd(shaderProgram);
-		else launcher.UIEnd(launcherShader);
+		engine.UIEnd(shaderProgram);
 
 		glfwSwapBuffers(window);
 	}
 	
-	launcherShader.Delete();
 	shaderProgram.Delete();
 
 	glfwDestroyWindow(window); // Уничтожение дескриптора окна
