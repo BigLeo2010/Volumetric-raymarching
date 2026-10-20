@@ -129,10 +129,14 @@ int main()
 	std::string path = "mri_ventricles_256x256x124_uint8.raw";
 	engine.Load(window, shaderProgram, VAO1, VBO1, path.c_str(), 256, 256, 124);
 
+	Texture stbnNoise("STBN", "stbn_scalar_2Dx1Dx1D_128x128x64x1", GL_TEXTURE2);
+
 	double lastTime = glfwGetTime();
 	double lastTimeFPS = glfwGetTime();
 	int nbFrames = 0;
 	double fps = 0;
+
+	int frameCounter = 0;
 
 	bool engineHasLoaded = false;
 
@@ -164,6 +168,10 @@ int main()
 
 		engine.Render(shaderProgram);
 
+		stbnNoise.Bind();
+		stbnNoise.texIUnit(shaderProgram, "stbnTexture", 1);
+
+		shaderProgram.SetInt("frameIndex", frameCounter);
 		shaderProgram.SetFloat("time", (float)glfwGetTime());
 
 		glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -171,6 +179,7 @@ int main()
 		engine.UIEnd(shaderProgram);
 
 		glfwSwapBuffers(window);
+		frameCounter++;
 	}
 	
 	shaderProgram.Delete();

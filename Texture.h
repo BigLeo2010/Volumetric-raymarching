@@ -3,6 +3,7 @@
 
 #include <glad/glad.h>
 #include "shaderClass.h"
+#include <stb/stb_image.h>
 
 class Texture {
 public:
@@ -13,6 +14,7 @@ public:
 	// Конструктор принимает указатель на 3D-массив байт, его размеры (ширину, высоту, глубину), 
 	// формат (например, GL_RED для шума) и текстурный слот
 	Texture(const void* data, int width, int height, int depth, GLenum format, GLenum pixelType, GLenum slot);
+	Texture(const std::string& folderPath, const std::string& prefix, GLenum slot);
 
 	// Привязка uniform-переменной шейдера к конкретному номеру слота
 	void texIUnit(Shader& shader, const char* uniform, GLuint unit);
