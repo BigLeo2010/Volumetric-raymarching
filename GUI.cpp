@@ -8,6 +8,8 @@ float GUI::clipX = 2.0f;
 float GUI::clipY = 2.0f;
 float GUI::clipZ = 2.0f;
 
+bool GUI::smoothing = false;
+
 GUI::GUI() {}
 
 void GUI::InitGUI(GLFWwindow* window) {
@@ -49,6 +51,7 @@ void GUI::UniformValues(Shader& shader) {
 	shader.SetFloat("clipX", clipX);
     shader.SetFloat("clipY", clipY);
     shader.SetFloat("clipZ", clipZ);
+    shader.SetBool("STBNsmooth", smoothing);
 }
 
 void GUI::CreateGUI(double fps, Texture& noise3DTexture, glm::vec3& colorA, glm::vec3& colorB, bool& canRotate) {
@@ -65,6 +68,8 @@ void GUI::CreateGUI(double fps, Texture& noise3DTexture, glm::vec3& colorA, glm:
         ImGui::Text("Main algorithm:");
         ImGui::SliderFloat("IsoMin", &isoMin, 0.0f, 1.0f);
         ImGui::SliderFloat("IsoMax", &isoMax, 0.0f, 1.0f);
+
+        ImGui::Checkbox("STBN smooth", &smoothing);
 
         ImGui::Text("Virtual clipper:");
         ImGui::SliderFloat("X Axis", &clipX, -2.0f, 2.0f);

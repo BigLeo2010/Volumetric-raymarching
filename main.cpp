@@ -126,8 +126,8 @@ int main()
 
 	/* ВСЕ, МОЖНО ТРОГАТЬ ДАЛЬШЕ */
 
-	std::string path = "mri_ventricles_256x256x124_uint8.raw";
-	engine.Load(window, shaderProgram, VAO1, VBO1, path.c_str(), 256, 256, 124);
+	std::string path = "ircad_patient_1.raw";
+	engine.Load(window, shaderProgram, VAO1, VBO1, path.c_str(), 512, 512, 111);
 
 	Texture stbnNoise("STBN", "stbn_scalar_2Dx1Dx1D_128x128x64x1", GL_TEXTURE2);
 

@@ -17,7 +17,9 @@ uniform vec3 rgbColorA;
 uniform vec3 rgbColorB;
 
 layout(binding = 2) uniform sampler2DArray stbnTexture;
-uniform int frameIndex;     
+uniform int frameIndex;  
+
+uniform bool STBNsmooth;
 
 // Плоскости отсечения (Clamping/Clipping) вдоль соответствующих осей
 uniform float clipX;
@@ -122,7 +124,11 @@ vec3 ray_march(in vec3 ro, in vec3 rd)
     
     // Ray Jittering: Сдвигаем начальную точку луча на случайную долю шага.
     // Это превращает упорядоченный бандинг (артефакты дискретизации) в высокочастотный белый шум.
-    float jitter = getSTBNNoise() * STEP_SIZE;
+    float jitter;
+
+    if (STBNsmooth) jitter = getSTBNNoise() * STEP_SIZE;
+    else jitter = hash(gl_FragCoord.xy) * STEP_SIZE;
+
     float t = tNear + jitter;
 
     // Цикл прохода вдоль луча

@@ -119,3 +119,13 @@ void Shader::SetInt(const std::string name, int value) {
 		glUniform1i(location, value);
 	}
 }
+
+void Shader::SetBool(const std::string name, bool value) {
+	GLint location = glGetUniformLocation(ID, name.c_str());
+	if (location == -1) {
+		std::cout << "Warning: uniform '" << name << "' doesn't exist!" << std::endl;
+	}
+	else {
+		glUniform1i(location, value);
+	}
+}

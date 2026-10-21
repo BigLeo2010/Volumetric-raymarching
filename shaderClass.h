@@ -24,6 +24,7 @@ public:
 	void SetVec2(const std::string name, float x, float y); // Установить uniform-переменную типа vec2
 	void SetFloat(const std::string name, float value); // Установить uniform-переменную типа float
 	void SetInt(const std::string name, int value); // Установить uniform-переменную типа int
+	void SetBool(const std::string name, bool value); // Установить uniform-переменную типа bool
 private:
 	void compileErrors(unsigned int shader, const char* type);
 };

@@ -22,6 +22,8 @@ public:
 	static float clipY;
 	static float clipZ;
 
+	static bool smoothing;
+
 	GUI();
 	void InitGUI(GLFWwindow* window);
 	void UIInputs();
