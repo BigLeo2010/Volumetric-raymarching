@@ -17,7 +17,7 @@ uniform vec3 rgbColorA;
 uniform vec3 rgbColorB;
 
 layout(binding = 2) uniform sampler2DArray stbnTexture;
-uniform uint frameIndex;     
+uniform int frameIndex;     
 
 // Плоскости отсечения (Clamping/Clipping) вдоль соответствующих осей
 uniform float clipX;
@@ -70,7 +70,9 @@ float hash(vec2 p) {
 
 float getSTBNNoise() {
     ivec2 pixelPos = ivec2(gl_FragCoord.xy) % 128;
+    
     int layer = int(frameIndex % 64);
+    
     return texelFetch(stbnTexture, ivec3(pixelPos, layer), 0).r;
 }
 

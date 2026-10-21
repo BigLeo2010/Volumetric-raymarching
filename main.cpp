@@ -169,7 +169,7 @@ int main()
 		engine.Render(shaderProgram);
 
 		stbnNoise.Bind();
-		stbnNoise.texIUnit(shaderProgram, "stbnTexture", 1);
+		//stbnNoise.texIUnit(shaderProgram, "stbnTexture", 1);
 
 		shaderProgram.SetInt("frameIndex", frameCounter);
 		shaderProgram.SetFloat("time", (float)glfwGetTime());
@@ -183,6 +183,7 @@ int main()
 	}
 	
 	shaderProgram.Delete();
+	stbnNoise.Delete();
 
 	glfwDestroyWindow(window); // Уничтожение дескриптора окна
 	glfwTerminate();           // Корректное завершение работы подсистемы GLFW
