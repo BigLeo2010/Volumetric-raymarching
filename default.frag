@@ -194,7 +194,7 @@ vec3 ray_march(in vec3 ro, in vec3 rd)
 
             // Расчёт базового цвета с помощью линейной интерполяции двух цветов на основе плотности.
             // Примечание: умножение и деление (rgbColorA/2 и rgbColorB*2) смещают контрастность градиента.
-            vec4 baseColor = vec4(mix(rgbColorA / 2.0, rgbColorB * 2.0, density), 1.0);
+            vec4 baseColor = vec4(mix(rgbColorA, rgbColorB, density), 1.0);
             
             // Финальный цвет = базовый цвет * коэффициент освещённости
             return baseColor.rgb * lighting;

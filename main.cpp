@@ -77,6 +77,14 @@ void change_window_size(GLFWwindow* window, int width, int height) {
 	}
 }
 
+struct Metadata {
+	int width = 0;
+	int height = 0;
+	int depth = 0;
+	std::string dataType;
+	std::string filePath;
+};
+
 
 int main() 
 {
@@ -125,6 +133,33 @@ int main()
 	VBO1.Unbind(); // Развязка GL_ARRAY_BUFFER
 
 	/* ВСЕ, МОЖНО ТРОГАТЬ ДАЛЬШЕ */
+
+	// volume config
+
+	std::ifstream file("volume_config.txt");
+
+	if (!file.is_open()) {
+		std::cerr << "Ошибка: Не удалось открыть конфигурационный файл!" << std::endl;
+		return 1;
+	}
+
+	Metadata data;
+
+	if (file >> data.width &&
+		file >> data.height &&
+		file >> data.depth &&
+		file >> data.dataType) {
+
+		file >> std::ws;
+		std::getline(file, data.filePath);
+	}
+	else {
+		std::cerr << "Ошибка: Неверный формат данных в файле!" << std::endl;
+	}
+
+	file.close();
+
+	// main volume
 
 	std::string path = "ircad_patient_1.raw";
 	engine.Load(window, shaderProgram, VAO1, VBO1, path.c_str(), 512, 512, 111);
