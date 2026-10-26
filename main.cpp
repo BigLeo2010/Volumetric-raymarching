@@ -161,6 +161,14 @@ int main()
 
 	// main volume
 
+	//FILE NAMES:
+	//mri_ventricles_256x256x124_uint8.raw HEAD MRI
+	//boston_teapot_256x256x178_uint8.raw Teapot MRI
+	//vis_male_128x256x256_uint8.raw Fun male head
+	//bonsai_256x256x256_uint8.raw Bonsai tree
+	//my_spine_volume.raw 1024*1024*29
+	//ircad_patient_1.raw 512*512*111
+
 	std::string path = "ircad_patient_1.raw";
 	engine.Load(window, shaderProgram, VAO1, VBO1, path.c_str(), 512, 512, 111);
 

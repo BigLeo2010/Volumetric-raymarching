@@ -23,14 +23,6 @@ void Engine::Load(GLFWwindow* window, Shader& shaderProgram, VAO& vao, VBO& vbo,
 
 	std::vector<uint8_t> rawBuffer(sizeX * sizeY * sizeZ);
 
-	//FILE NAMES:
-	//mri_ventricles_256x256x124_uint8.raw HEAD MRI
-	//boston_teapot_256x256x178_uint8.raw Teapot MRI
-	//vis_male_128x256x256_uint8.raw Fun male head
-	//bonsai_256x256x256_uint8.raw Bonsai tree
-	//my_spine_volume.raw 1024*1024*29
-	//ircad_patient_1.raw 512*512*111
-
 	std::ifstream file(path, std::ios::binary);
 
 	/*if (!file.is_open()) {

@@ -39,26 +39,42 @@ void Camera::Inputs(GLFWwindow* window, float deltaTime, bool canRotate) {
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 
 #ifdef _WIN32
-		// КОД ДЛЯ WINDOWS
+		// КОД ДЛЯ WINDOWS (С вашей инверсией Y и защитой от скачков)
 		if (firstClick) {
 			glfwSetCursorPos(window, (width / 2), (height / 2));
 			firstClick = false;
+			return; // Пропускаем первый кадр, чтобы избежать стартового рывка
 		}
 
 		double mouseX, mouseY;
 		glfwGetCursorPos(window, &mouseX, &mouseY);
 
+		// 1. ЗАЩИТА: Если ОС вернула мышь ровно в центр, движения не было — выходим
+		if (mouseX == (width / 2) && mouseY == (height / 2)) {
+			return;
+		}
+
 		float offsetX = (float)(mouseX - (width / 2)) * sensitivity;
-		float offsetY = (float)(-(height / 2) + mouseY) * sensitivity;
+		float offsetY = (float)(-(height / 2) + mouseY) * sensitivity; // Вернул вашу инверсию Y
+
+		// Если мы тянем мышь в обратную сторону, движение разрешено и камера мгновенно выходит из лока.
+		if (pitch >= 89.0f && offsetY > 0.0f) {
+			offsetY = 0.0f; // Запрещаем идти выше 89
+		}
+		if (pitch <= -89.0f && offsetY < 0.0f) {
+			offsetY = 0.0f; // Запрещаем идти ниже -89
+		}
 
 		yaw += offsetX;
 		pitch += offsetY;
 
+		// Финальное жесткое ограничение углов
 		if (pitch > 89.0f) pitch = 89.0f;
 		if (pitch < -89.0f) pitch = -89.0f;
 
 		glfwSetCursorPos(window, (width / 2), (height / 2));
 #else
+
 		// КОД ДЛЯ LINUX/WSL
 		double mouseX, mouseY;
 		glfwGetCursorPos(window, &mouseX, &mouseY);
