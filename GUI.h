@@ -23,6 +23,7 @@ public:
 	static float clipZ;
 
 	static bool smoothing;
+	static bool use_dvr;
 
 	GUI();
 	void InitGUI(GLFWwindow* window);

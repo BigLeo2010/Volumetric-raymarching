@@ -9,6 +9,7 @@ float GUI::clipY = 2.0f;
 float GUI::clipZ = 2.0f;
 
 bool GUI::smoothing = false;
+bool GUI::use_dvr = false;
 
 GUI::GUI() {}
 
@@ -52,6 +53,7 @@ void GUI::UniformValues(Shader& shader) {
     shader.SetFloat("clipY", clipY);
     shader.SetFloat("clipZ", clipZ);
     shader.SetBool("STBNsmooth", smoothing);
+	shader.SetBool("use_dvr", use_dvr);
 }
 
 void GUI::CreateGUI(double fps, Texture& noise3DTexture, glm::vec3& colorA, glm::vec3& colorB, bool& canRotate) {
@@ -70,6 +72,7 @@ void GUI::CreateGUI(double fps, Texture& noise3DTexture, glm::vec3& colorA, glm:
         ImGui::SliderFloat("IsoMax", &isoMax, 0.0f, 1.0f);
 
         ImGui::Checkbox("STBN smooth", &smoothing);
+        ImGui::Checkbox("Use DVR", &use_dvr);
 
         ImGui::Text("Virtual clipper:");
         ImGui::SliderFloat("X Axis", &clipX, -2.0f, 2.0f);
