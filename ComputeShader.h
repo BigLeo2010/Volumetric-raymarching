@@ -8,12 +8,18 @@
 #include<cerrno>
 #include<vector>
 #include<cmath>
+#include"shaderClass.h"
 
 class ComputeShader {
 public:
-	unsigned int ID;
+	GLuint ID;
 
 	ComputeShader(const char* computePath);
+
+	void Activate();
+	void Delete();
+private:
+	void compileErrors(unsigned int shader, const char* type);
 };
 
 #endif

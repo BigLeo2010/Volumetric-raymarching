@@ -17,6 +17,7 @@
 #include"Box.h"
 #include"GUI.h"
 #include"NormalGeneration.h"
+#include"ComputeShader.h"
 
 class Engine {
 private:

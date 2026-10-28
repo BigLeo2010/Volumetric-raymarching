@@ -28,6 +28,7 @@ extern "C" {
 #include"GUI.h"
 #include"NormalGeneration.h"
 #include"Engine.h"
+#include"ComputeShader.h"
 
 GLfloat vertices[] = {
 	// Первый треугольник
