@@ -78,31 +78,20 @@ void change_window_size(GLFWwindow* window, int width, int height) {
 	}
 }
 
-struct Metadata {
-	int width = 0;
-	int height = 0;
-	int depth = 0;
-	std::string dataType;
-	std::string filePath;
-};
-
-
 int main() 
 {
-	system("chcp 1251 > nul"); // Локализация вывода консоли (кодовая страница Windows-1251)
+	system("chcp 1251 > nul");
 
-	glfwInit(); // Инициализация подсистемы GLFW
+	glfwInit();
 
-	// Конфигурация контекста дескриптора окна (OpenGL 4.3 Core Profile)
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); // Отсечение deprecated-функционала
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	GLfloat backgroundColor[] = { 45.0f/255.0f, 45.0f / 255.0f, 45.0f / 255.0f }; // Нормализованные RGBA значения цвета очистки
+	GLfloat backgroundColor[] = { 45.0f/255.0f, 45.0f / 255.0f, 45.0f / 255.0f };
 
 	Engine engine;
 
-	// Инстанцирование объекта окна и создание ассоциированного контекста OpenGL
 	GLFWwindow* window = glfwCreateWindow(engine.WIDTH, engine.HEIGHT, "Volumetric Raymarching", NULL, NULL);
 
 	if (window == NULL) {
@@ -111,27 +100,26 @@ int main()
 		return -1;
 	}
 
-	glfwMakeContextCurrent(window); // Привязка контекста OpenGL к текущему потоку выполнения
+	glfwMakeContextCurrent(window);
 
-	gladLoadGL(); // Динамическая загрузка указателей на функции API OpenGL через GLAD
+	gladLoadGL();
 
 	glViewport(0, 0, engine.WIDTH, engine.HEIGHT);
 
 
 	/* ВОТ ЭТУ ХУЙНЮ НЕ ТРОГАТЬ */
 
-	// Инициализация графического конвейера (компиляция и линковка шейдеров)
 	Shader shaderProgram("default.vert", "default.frag");
 
 	VAO VAO1;
 	VBO VBO1(vertices, sizeof(vertices));
 
-	VAO1.Bind();  // Активация VAO для записи последующих конфигураций буферов
+	VAO1.Bind();
 
 	VAO1.LinkAttrib(VBO1, 0, 3, GL_FLOAT, 3 * sizeof(float), (void*)0);
 
-	VAO1.Unbind(); // Сброс состояния VAO (защита от непреднамеренной мутации стейта)
-	VBO1.Unbind(); // Развязка GL_ARRAY_BUFFER
+	VAO1.Unbind();
+	VBO1.Unbind();
 
 	/* ВСЕ, МОЖНО ТРОГАТЬ ДАЛЬШЕ */
 
@@ -144,15 +132,19 @@ int main()
 		return 1;
 	}
 
-	Metadata data;
+	int width = 0;
+	int height = 0;
+	int depth = 0;
+	std::string dataType;
+	std::string filePath;
 
-	if (file >> data.width &&
-		file >> data.height &&
-		file >> data.depth &&
-		file >> data.dataType) {
+	if (file >> width &&
+		file >> height &&
+		file >> depth &&
+		file >> dataType) {
 
 		file >> std::ws;
-		std::getline(file, data.filePath);
+		std::getline(file, filePath);
 	}
 	else {
 		std::cerr << "Ошибка: Неверный формат данных в файле!" << std::endl;
@@ -167,8 +159,8 @@ int main()
 	//boston_teapot_256x256x178_uint8.raw Teapot MRI
 	//vis_male_128x256x256_uint8.raw Fun male head
 	//bonsai_256x256x256_uint8.raw Bonsai tree
-	//my_spine_volume.raw 1024*1024*29
-	//ircad_patient_1.raw 512*512*111
+	//my_spine_volume.raw 1024*1024*29 Мой сколеоз
+	//ircad_patient_1.raw 512*512*111 КТ брюшной полости вроде
 
 	std::string path = "ircad_patient_1.raw";
 	engine.Load(window, shaderProgram, VAO1, VBO1, path.c_str(), 512, 512, 111);
@@ -208,12 +200,11 @@ int main()
 
 		engine.CameraRender(window, deltaTime);
 
-		shaderProgram.Activate(); // Инжект шейдерной программы в текущий пайплайн
+		shaderProgram.Activate();
 
 		engine.Render(shaderProgram);
 
 		stbnNoise.Bind();
-		//stbnNoise.texIUnit(shaderProgram, "stbnTexture", 1);
 
 		shaderProgram.SetInt("frameIndex", frameCounter);
 		shaderProgram.SetFloat("time", (float)glfwGetTime());
@@ -229,8 +220,8 @@ int main()
 	shaderProgram.Delete();
 	stbnNoise.Delete();
 
-	glfwDestroyWindow(window); // Уничтожение дескриптора окна
-	glfwTerminate();           // Корректное завершение работы подсистемы GLFW
+	glfwDestroyWindow(window);
+	glfwTerminate();
 
 	return 0;
 }

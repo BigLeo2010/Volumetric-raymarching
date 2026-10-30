@@ -15,7 +15,6 @@ void Engine::scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 void Engine::Load(GLFWwindow* window, Shader& shaderProgram, VAO& vao, VBO& vbo, const char path[], const int sizeX, const int sizeY, const int sizeZ) {
 	pCamera = new Camera(1920, 1080, glm::vec3(0.0f, 0.0f, 0.0f));
 
-	// Регистрируем коллбэк в GLFW
 	glfwSetScrollCallback(window, scroll_callback);
 
 	VAO1 = &vao;
@@ -24,11 +23,6 @@ void Engine::Load(GLFWwindow* window, Shader& shaderProgram, VAO& vao, VBO& vbo,
 	std::vector<uint8_t> rawBuffer(sizeX * sizeY * sizeZ);
 
 	std::ifstream file(path, std::ios::binary);
-
-	/*if (!file.is_open()) {
-		std::cerr << "КРИТИЧЕСКАЯ ОШИБКА: Не удалось открыть файл" << std::endl;
-		return -1;
-	}*/
 
 	file.read(reinterpret_cast<char*>(rawBuffer.data()), rawBuffer.size());
 	file.close();
@@ -81,17 +75,14 @@ void Engine::Render(Shader& shaderProgram) {
 	teapotTexture->Bind();
 	normalTexture->Bind();
 
-	VAO1->Bind(); // Контекстная активация сконфигурированных вершинных атрибутов
+	VAO1->Bind();
 
-	// Передаем позицию камеры в шейдер
 	shaderProgram.SetVec3("camera_position", pCamera->Position.x, pCamera->Position.y, pCamera->Position.z);
 
-	// Передаем векторы направления камеры (Forward, Right, Up)
 	shaderProgram.SetVec3("camForward", pCamera->camForward.x, pCamera->camForward.y, pCamera->camForward.z);
 	shaderProgram.SetVec3("camRight", pCamera->camRight.x, pCamera->camRight.y, pCamera->camRight.z);
 	shaderProgram.SetVec3("camUp", pCamera->camUp.x, pCamera->camUp.y, pCamera->camUp.z);
 
-	// Передаем цвета (они статические члены Launcher, берутся напрямую)
 	shaderProgram.SetVec3("rgbColorA", rgbColorA.x, rgbColorA.y, rgbColorA.z);
 	shaderProgram.SetVec3("rgbColorB", rgbColorB.x, rgbColorB.y, rgbColorB.z);
 

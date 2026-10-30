@@ -18,14 +18,12 @@ ComputeShader::ComputeShader(const char* computePath) {
 	glDeleteShader(computeShader);
 }
 
-// Метод для активации этой шейдерной программы
 void ComputeShader::Activate() {
-	glUseProgram(ID); // Включаем программу для отрисовки следующих объектов
+	glUseProgram(ID);
 }
 
-// Метод для очистки памяти
 void ComputeShader::Delete() {
-	glDeleteProgram(ID); // Удаляем шейдерную программу с видеокарты
+	glDeleteProgram(ID);
 }
 
 void ComputeShader::compileErrors(unsigned int shader, const char* type) {

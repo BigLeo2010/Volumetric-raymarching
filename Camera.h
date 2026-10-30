@@ -1,7 +1,6 @@
 #ifndef CAMERA_CLASS_H
 #define CAMERA_CLASS_H
 
-// Разрешаем использование экспериментальных функций GLM (нужно для rotate_vector и vector_angle)
 #define GLM_ENABLE_EXPERIMENTAL
 
 #include <glad/glad.h>
