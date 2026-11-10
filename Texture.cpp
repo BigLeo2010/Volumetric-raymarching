@@ -1,27 +1,41 @@
 #include "Texture.h"
 
 Texture::Texture(const void* data, int width, int height, int depth, GLenum format, GLenum pixelType, GLenum slot) {
-	type = GL_TEXTURE_3D;
-	this->slot = slot;
+    type = GL_TEXTURE_3D;
+    this->slot = slot;
 
-	glGenTextures(1, &ID);
-	glActiveTexture(slot);
-	glBindTexture(GL_TEXTURE_3D, ID);
+    glGenTextures(1, &ID);
+    glActiveTexture(slot);
+    glBindTexture(GL_TEXTURE_3D, ID);
 
-	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
-	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+    GLenum inFormat;
+    GLenum inputFormat = format;
 
-	GLenum internalFormat = (format == GL_RED) ? GL_R32F : format;
+    if (format == GL_RED) {
+        inFormat = GL_R32F;
+    }
+    else if (format == GL_RGBA || format == GL_RGBA8) {
+        inFormat = GL_RGBA8;
+        inputFormat = GL_RGBA;
+    }
+    else {
+        inFormat = format;
+    }
 
-	glTexImage3D(GL_TEXTURE_3D, 0, internalFormat, width, height, depth, 0, format, pixelType, data);
+    glTexStorage3D(GL_TEXTURE_3D, 1, inFormat, width, height, depth);
+    
+    if (data != nullptr)
+        glTexSubImage3D(GL_TEXTURE_3D, 0, 0, 0, 0, width, height, depth, inputFormat, pixelType, data);
 
-	glBindTexture(GL_TEXTURE_3D, 0);
+    glBindTexture(GL_TEXTURE_3D, 0);
 }
 
 Texture::Texture(const std::string& folderPath, const std::string& prefix, GLenum slot) {

@@ -36,54 +36,24 @@ void Camera::Matrix(Shader& shader, const char* uniform) {
 void Camera::Inputs(GLFWwindow* window, float deltaTime, bool canRotate) {
 
 	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
-		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
-
-#ifdef _WIN32
-		// КОД ДЛЯ WINDOWS (С вашей инверсией Y и защитой от скачков)
-		if (firstClick) {
-			glfwSetCursorPos(window, (width / 2), (height / 2));
-			firstClick = false;
-			return;
-		}
-
-		double mouseX, mouseY;
-		glfwGetCursorPos(window, &mouseX, &mouseY);
-
-		if (mouseX == (width / 2) && mouseY == (height / 2)) {
-			return;
-		}
-
-		float offsetX = (float)(mouseX - (width / 2)) * sensitivity;
-		float offsetY = (float)(-(height / 2) + mouseY) * sensitivity;
-
-		if (pitch >= 89.0f && offsetY > 0.0f) {
-			offsetY = 0.0f;
-		}
-		if (pitch <= -89.0f && offsetY < 0.0f) {
-			offsetY = 0.0f;
-		}
-
-		yaw += offsetX;
-		pitch += offsetY;
-
-		if (pitch > 89.0f) pitch = 89.0f;
-		if (pitch < -89.0f) pitch = -89.0f;
-
-		glfwSetCursorPos(window, (width / 2), (height / 2));
-#else
-
-		// КОД ДЛЯ LINUX/WSL
-		double mouseX, mouseY;
-		glfwGetCursorPos(window, &mouseX, &mouseY);
 
 		if (firstClick) {
+			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+			double mouseX, mouseY;
+			glfwGetCursorPos(window, &mouseX, &mouseY);
 			lastX = mouseX;
 			lastY = mouseY;
+
 			firstClick = false;
+			return;
 		}
 
-		float offsetX = (float)(mouseX - lastX) * sensitivity;
-		float offsetY = (float)(mouseY - lastY) * sensitivity;
+		double mouseX, mouseY;
+		glfwGetCursorPos(window, &mouseX, &mouseY);
+
+		float offsetX = (float)(mouseX - lastX) * sensitivity * deltaTime * 100.0f;
+		float offsetY = -(float)(lastY - mouseY) * sensitivity * deltaTime * 100.0f;
 
 		lastX = mouseX;
 		lastY = mouseY;
@@ -93,15 +63,17 @@ void Camera::Inputs(GLFWwindow* window, float deltaTime, bool canRotate) {
 
 		if (pitch > 89.0f) pitch = 89.0f;
 		if (pitch < -89.0f) pitch = -89.0f;
-#endif
 	}
 	else if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_RELEASE) {
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 		firstClick = true;
 
-		if (canRotate) yaw += deltaTime * -20.0f;
+		if (canRotate) {
+			yaw += deltaTime * -20.0f;
+		}
 	}
 }
+
 
 
 void Camera::ProcessScroll(float yoffset) {

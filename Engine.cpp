@@ -45,14 +45,25 @@ void Engine::Load(GLFWwindow* window, Shader& shaderProgram, VAO& vao, VBO& vbo,
 	teapotTexture->texIUnit(shaderProgram, "uNoise", 0);
 
 	normalTexture = new Texture(
-		NormalGeneration::GenerateNormalMap(targetSize, cubeBuffer).data(),
+		nullptr,
 		targetSize,
 		targetSize,
 		targetSize,
-		GL_RGB,
+		GL_RGBA8,
 		GL_UNSIGNED_BYTE,
 		GL_TEXTURE1
 	);
+
+	ComputeShader computeShader("normal_map.comp");
+	computeShader.Activate();
+
+	glBindImageTexture(0, teapotTexture->ID, 0, GL_TRUE, 0, GL_READ_ONLY, GL_R32F);
+
+	glBindImageTexture(1, normalTexture->ID, 0, GL_TRUE, 0, GL_WRITE_ONLY, GL_RGBA8);
+
+	glDispatchCompute(targetSize / 8, targetSize / 8, targetSize / 8);
+
+	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 
 	normalTexture->texIUnit(shaderProgram, "uNormal", 1);
 	
