@@ -30,9 +30,6 @@ private:
 	Texture* normalTexture;
 
 	GUI settings;
-
-	static glm::vec3 rgbColorA;
-	static glm::vec3 rgbColorB;
 	static bool rotate;
 public:
 	int WIDTH = 1920;

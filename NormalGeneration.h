@@ -12,7 +12,7 @@ struct ColorRGB {
 
 class NormalGeneration {
 public:
-	static std::vector<ColorRGB> GenerateNormalMap(int targetSize, const std::vector<uint8_t>& cubeBuffer);
+	static std::vector<ColorRGB> GenerateNormalMap(int targetSize, std::vector<uint8_t>& cubeBuffer);;
 };
 
 #endif

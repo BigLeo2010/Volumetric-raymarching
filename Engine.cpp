@@ -2,8 +2,6 @@
 #include <algorithm>
 
 Camera* Engine::pCamera = nullptr;
-glm::vec3 Engine::rgbColorA = glm::vec3(0.0f, 0.0f, 1.0f);
-glm::vec3 Engine::rgbColorB = glm::vec3(1.0f, 0.0f, 0.0f);
 bool Engine::rotate = true;
 
 void Engine::scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
@@ -72,7 +70,7 @@ void Engine::Load(GLFWwindow* window, Shader& shaderProgram, VAO& vao, VBO& vbo,
 
 void Engine::UIRender(double fps) {
 	settings.UIInputs();
-	settings.CreateGUI(fps, *teapotTexture, rgbColorA, rgbColorB, rotate);
+	settings.CreateGUI(fps, *teapotTexture, rotate);
 }
 
 void Engine::CameraRender(GLFWwindow* window, float deltaTime) {
@@ -93,10 +91,6 @@ void Engine::Render(Shader& shaderProgram) {
 	shaderProgram.SetVec3("camForward", pCamera->camForward.x, pCamera->camForward.y, pCamera->camForward.z);
 	shaderProgram.SetVec3("camRight", pCamera->camRight.x, pCamera->camRight.y, pCamera->camRight.z);
 	shaderProgram.SetVec3("camUp", pCamera->camUp.x, pCamera->camUp.y, pCamera->camUp.z);
-
-	shaderProgram.SetVec3("rgbColorA", rgbColorA.x, rgbColorA.y, rgbColorA.z);
-	shaderProgram.SetVec3("rgbColorB", rgbColorB.x, rgbColorB.y, rgbColorB.z);
-
 }
 
 void Engine::UIEnd(Shader& shaderProgram) {

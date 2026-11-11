@@ -29,7 +29,7 @@ public:
 	void InitGUI(GLFWwindow* window);
 	void UIInputs();
 	void UniformValues(Shader& shader);
-	void CreateGUI(double fps, Texture& noise3DTexture, glm::vec3& colorA, glm::vec3& colorB, bool& canRotate);
+	void CreateGUI(double fps, Texture& noise3DTexture, bool& canRotate);
 	void Render();
 	~GUI();
 };

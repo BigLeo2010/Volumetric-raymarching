@@ -3,7 +3,6 @@ out vec4 FragColor;
 
 in vec3 pos;
 
-uniform float time;
 uniform vec3 camera_position;
 uniform vec3 camForward; 
 uniform vec3 camRight;
@@ -12,8 +11,6 @@ uniform sampler3D uNoise;
 uniform sampler3D uNormal;
 uniform float isoMin;
 uniform float isoMax;
-uniform vec3 rgbColorA;
-uniform vec3 rgbColorB;
 
 layout(binding = 2) uniform sampler2DArray stbnTexture;
 uniform int frameIndex;  

@@ -6,6 +6,16 @@ layout(r32f, binding = 0) readonly uniform image3D uNoise;
 
 layout(rgba8, binding = 1) writeonly uniform image3D uNormal;
 
+
+ivec3 size = imageSize(uNoise);
+
+float getDensity(int x, int y, int z){
+    x = max(0, min(x, size.x - 1));
+	y = max(0, min(y, size.y - 1));
+    z = max(0, min(z, size.z - 1));
+    return imageLoad(uNoise, ivec3(x,y,z)).r;
+}
+
 void main() {
     ivec3 pos = ivec3(gl_GlobalInvocationID.xyz);
     ivec3 size = imageSize(uNoise);
@@ -14,35 +24,23 @@ void main() {
         return;
     }
 
-    ivec3 xm1 = clamp(pos - ivec3(1, 0, 0), ivec3(0), size - ivec3(1));
-    ivec3 xp1 = clamp(pos + ivec3(1, 0, 0), ivec3(0), size - ivec3(1));
+    float dx = getDensity(pos.x + 1, pos.y, pos.z) - getDensity(pos.x - 1, pos.y, pos.z);
+	float dy = getDensity(pos.x, pos.y + 1, pos.z) - getDensity(pos.x, pos.y - 1, pos.z);
+	float dz = getDensity(pos.x, pos.y, pos.z + 1) - getDensity(pos.x, pos.y, pos.z - 1);
 
-    ivec3 ym1 = clamp(pos - ivec3(0, 1, 0), ivec3(0), size - ivec3(1));
-    ivec3 yp1 = clamp(pos + ivec3(0, 1, 0), ivec3(0), size - ivec3(1));
+    float nx = -dx;
+	float ny = -dy;
+	float nz = -dz;
 
-    ivec3 zm1 = clamp(pos - ivec3(0, 0, 1), ivec3(0), size - ivec3(1));
-    ivec3 zp1 = clamp(pos + ivec3(0, 0, 1), ivec3(0), size - ivec3(1));
+	float len = sqrt(nx * nx + ny * ny + nz * nz) + 1e-6f;
+	nx /= len;
+	ny /= len;
+	nz /= len;
 
-    float v_xp1 = imageLoad(uNoise, xp1).r;
-    float v_xm1 = imageLoad(uNoise, xm1).r;
+    vec4 finalNormal;
+	finalNormal.r = (nx * 0.5 + 0.5);
+	finalNormal.g = (ny * 0.5 + 0.5);
+	finalNormal.b = (nz * 0.5 + 0.5);
 
-    float v_yp1 = imageLoad(uNoise, yp1).r;
-    float v_ym1 = imageLoad(uNoise, ym1).r;
-
-    float v_zp1 = imageLoad(uNoise, zp1).r;
-    float v_zm1 = imageLoad(uNoise, zm1).r;
-
-    float dx = v_xp1 - v_xm1;
-    float dy = v_yp1 - v_ym1;
-    float dz = v_zp1 - v_zm1;
-
-    vec3 grad = vec3(dx, dy, dz);
-
-    float len = length(grad) + 1e-6;
-
-    vec3 normal = -grad / len;
-
-    vec4 finalColor = vec4(normal * 0.5 + 0.5, 1.0);
-
-    imageStore(uNormal, pos, finalColor);
+    imageStore(uNormal, pos, finalNormal);
 }

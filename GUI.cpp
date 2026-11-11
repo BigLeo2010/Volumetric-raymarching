@@ -56,7 +56,7 @@ void GUI::UniformValues(Shader& shader) {
 	shader.SetBool("use_dvr", use_dvr);
 }
 
-void GUI::CreateGUI(double fps, Texture& noise3DTexture, glm::vec3& colorA, glm::vec3& colorB, bool& canRotate) {
+void GUI::CreateGUI(double fps, Texture& noise3DTexture, bool& canRotate) {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
@@ -80,10 +80,6 @@ void GUI::CreateGUI(double fps, Texture& noise3DTexture, glm::vec3& colorA, glm:
         ImGui::SliderFloat("Z Axis", &clipZ, -2.0f, 2.0f);
 
         ImGui::Checkbox("Rotate scan", &canRotate);
-
-        ImGui::Text("Color:");
-        ImGui::ColorEdit3("A", &colorA.r);
-        ImGui::ColorEdit3("B", &colorB.r);
 
         ImGui::End();
     }
