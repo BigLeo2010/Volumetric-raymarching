@@ -5,6 +5,7 @@
 #include "Texture.h"
 #include "Box.h"
 #include "imgui.h"
+#include "imgui_color_gradient.h"
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
 #include <GLFW/glfw3.h>
@@ -24,6 +25,13 @@ public:
 
 	static bool smoothing;
 	static bool use_dvr;
+
+	static ImGradient gradient;
+	static ImGradientMark* draggingMark;
+	static ImGradientMark* selectedMark;
+	static GLuint colorID;
+
+	static void UpdateTransferFunctionTexture();
 
 	GUI();
 	void InitGUI(GLFWwindow* window);

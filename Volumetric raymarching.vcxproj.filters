@@ -87,6 +87,9 @@
     <ClInclude Include="ComputeShader.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="imgui_color_gradient.h">
+      <Filter>Файлы ресурсов\Imgui</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp">
@@ -151,6 +154,9 @@
     </ClCompile>
     <ClCompile Include="stb.cpp">
       <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_color_gradient.cpp">
+      <Filter>Файлы ресурсов\Imgui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

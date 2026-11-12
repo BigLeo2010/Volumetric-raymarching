@@ -11,6 +11,11 @@ float GUI::clipZ = 2.0f;
 bool GUI::smoothing = false;
 bool GUI::use_dvr = false;
 
+ImGradient GUI::gradient;
+ImGradientMark* GUI::draggingMark = nullptr;
+ImGradientMark* GUI::selectedMark = nullptr;
+unsigned int GUI::colorID = 0;
+
 GUI::GUI() {}
 
 void GUI::InitGUI(GLFWwindow* window) {
@@ -27,6 +32,24 @@ void GUI::InitGUI(GLFWwindow* window) {
     ImGui_ImplOpenGL3_Init("#version 330");
 
     windowGUI = window;
+
+    glGenTextures(1, &colorID);
+    glBindTexture(GL_TEXTURE_1D, colorID);
+    glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    UpdateTransferFunctionTexture();
+}
+
+void GUI::UpdateTransferFunctionTexture() {
+    float data[256 * 3];
+    for (int i = 0; i < 256; ++i) {
+        gradient.getColorAt(i / 255.0f, &data[i * 3]);
+    }
+
+    glBindTexture(GL_TEXTURE_1D, colorID);
+    glTexImage1D(GL_TEXTURE_1D, 0, GL_RGB32F, 256, 0, GL_RGB, GL_FLOAT, data);
 }
 
 void GUI::UIInputs() {
@@ -49,11 +72,15 @@ void GUI::UIInputs() {
 void GUI::UniformValues(Shader& shader) {
     shader.SetFloat("isoMax", isoMax);
     shader.SetFloat("isoMin", isoMin);
-	shader.SetFloat("clipX", clipX);
+    shader.SetFloat("clipX", clipX);
     shader.SetFloat("clipY", clipY);
     shader.SetFloat("clipZ", clipZ);
     shader.SetBool("STBNsmooth", smoothing);
-	shader.SetBool("use_dvr", use_dvr);
+    shader.SetBool("use_dvr", use_dvr);
+
+    glActiveTexture(GL_TEXTURE5);
+    glBindTexture(GL_TEXTURE_1D, colorID);
+    shader.SetInt("colorRamp", 5);
 }
 
 void GUI::CreateGUI(double fps, Texture& noise3DTexture, bool& canRotate) {
@@ -81,6 +108,12 @@ void GUI::CreateGUI(double fps, Texture& noise3DTexture, bool& canRotate) {
 
         ImGui::Checkbox("Rotate scan", &canRotate);
 
+        ImGui::Separator();
+        ImGui::Text("Transfer Function:");
+        if (ImGui::GradientEditor(&gradient, draggingMark, selectedMark)) {
+            UpdateTransferFunctionTexture();
+        }
+
         ImGui::End();
     }
 }
@@ -91,6 +124,10 @@ void GUI::Render() {
 }
 
 GUI::~GUI() {
+    if (colorID != 0) {
+        glDeleteTextures(1, &colorID);
+    }
+
     if (windowGUI) {
         ImGui_ImplOpenGL3_Shutdown();
         ImGui_ImplGlfw_Shutdown();

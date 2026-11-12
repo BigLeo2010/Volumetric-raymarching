@@ -172,6 +172,7 @@
     <ClInclude Include="ComputeShader.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="GUI.h" />
+    <ClInclude Include="imgui_color_gradient.h" />
     <ClInclude Include="Libraries\external\Imgui\backends\imgui_impl_glfw.h" />
     <ClInclude Include="Libraries\external\Imgui\backends\imgui_impl_opengl3.h" />
     <ClInclude Include="Libraries\external\Imgui\backends\imgui_impl_opengl3_loader.h" />
@@ -196,6 +197,7 @@
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="GUI.cpp" />
+    <ClCompile Include="imgui_color_gradient.cpp" />
     <ClCompile Include="Libraries\external\Imgui\backends\imgui_impl_glfw.cpp" />
     <ClCompile Include="Libraries\external\Imgui\backends\imgui_impl_opengl3.cpp" />
     <ClCompile Include="Libraries\external\Imgui\imgui.cpp" />

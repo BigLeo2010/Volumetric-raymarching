@@ -92,7 +92,7 @@ int main()
 
 	Engine engine;
 
-	GLFWwindow* window = glfwCreateWindow(engine.WIDTH, engine.HEIGHT, "Volumetric Raymarching", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(engine.WIDTH, engine.HEIGHT, "OpenVolume3D", NULL, NULL);
 
 	if (window == NULL) {
 		std::cout << "Failed to create a window" << std::endl;

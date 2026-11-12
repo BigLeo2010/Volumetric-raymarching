@@ -22,6 +22,8 @@ uniform float clipX;
 uniform float clipY;
 uniform float clipZ;
 
+uniform sampler1D colorRamp;
+
 const vec3 BOX_MIN = vec3(-2.0, -2.0, -2.0);
 const vec3 BOX_MAX = vec3( 2.0,  2.0,  2.0);
 
@@ -148,7 +150,7 @@ vec3 ray_march(in vec3 ro, in vec3 rd)
             float ambient = 0.2; 
             float lighting = max(diffuse_intensity, ambient);
 
-            vec4 baseColor = vec4(getProceduralColor(density), 0);
+            vec4 baseColor = vec4(texture(colorRamp, density).rgb, 1.0);
             
             return baseColor.rgb * lighting;
         }
