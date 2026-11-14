@@ -22,6 +22,9 @@ public:
 	static float clipX;
 	static float clipY;
 	static float clipZ;
+	static float negClipX;
+	static float negClipY;
+	static float negClipZ;
 
 	static bool smoothing;
 	static bool use_dvr;

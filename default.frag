@@ -18,6 +18,9 @@ uniform int frameIndex;
 uniform bool STBNsmooth;
 uniform bool use_dvr;
 
+uniform float negClipX;
+uniform float negClipY;
+uniform float negClipZ;
 uniform float clipX;
 uniform float clipY;
 uniform float clipZ;
@@ -92,7 +95,9 @@ vec3 ray_march(in vec3 ro, in vec3 rd)
 
         vec3 p = ro + rd * t;
 
-        if (p.x > clipX || p.y > clipY || p.z > clipZ) {
+        if ((p.x > clipX || p.x < negClipX) || 
+            (p.y > clipY || p.y < negClipY) || 
+            (p.z > clipZ || p.z < negClipZ)) {
             t += STEP_SIZE;
             continue;
         }

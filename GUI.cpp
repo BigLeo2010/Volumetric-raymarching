@@ -4,6 +4,9 @@
 float GUI::isoMin = 0.2f;
 float GUI::isoMax = 1.0f;
 
+float GUI::negClipX = -2.0f;
+float GUI::negClipY = -2.0f;
+float GUI::negClipZ = -2.0f;
 float GUI::clipX = 2.0f;
 float GUI::clipY = 2.0f;
 float GUI::clipZ = 2.0f;
@@ -25,6 +28,8 @@ void GUI::InitGUI(GLFWwindow* window) {
     io = &ImGui::GetIO();
 
     io->ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+
+    io->Fonts->AddFontFromFileTTF("fonts/Philosopher-Regular.ttf", 18.0f, nullptr, io->Fonts->GetGlyphRangesCyrillic());
 
     ImGui::StyleColorsDark();
 
@@ -72,6 +77,9 @@ void GUI::UIInputs() {
 void GUI::UniformValues(Shader& shader) {
     shader.SetFloat("isoMax", isoMax);
     shader.SetFloat("isoMin", isoMin);
+    shader.SetFloat("negClipX", negClipX);
+    shader.SetFloat("negClipY", negClipY);
+    shader.SetFloat("negClipZ", negClipZ);
     shader.SetFloat("clipX", clipX);
     shader.SetFloat("clipY", clipY);
     shader.SetFloat("clipZ", clipZ);
@@ -88,28 +96,42 @@ void GUI::CreateGUI(double fps, Texture& noise3DTexture, bool& canRotate) {
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
 
+    ImGuiViewport* viewport = ImGui::GetMainViewport();
+    ImGui::SetNextWindowPos(viewport->WorkPos, ImGuiCond_Always);
+    ImGui::SetNextWindowSize(ImVec2(400.0f, viewport->WorkSize.y), ImGuiCond_Once);
+    ImGui::SetNextWindowSizeConstraints(
+        ImVec2(10.0f, viewport->WorkSize.y),
+        ImVec2(800.0f, viewport->WorkSize.y)
+    );
+
+    ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse;
+
+
     {
-        ImGui::Begin("Scene");
+        ImGui::Begin("Настройки");
 
         std::string fpsTitle = "FPS: " + std::to_string(int(fps));
         ImGui::Text("%s", fpsTitle.c_str());
 
-        ImGui::Text("Main algorithm:");
-        ImGui::SliderFloat("IsoMin", &isoMin, 0.0f, 1.0f);
-        ImGui::SliderFloat("IsoMax", &isoMax, 0.0f, 1.0f);
+        ImGui::Text("Плотность:");
+        ImGui::SliderFloat("Мин. плотность", &isoMin, 0.0f, 1.0f);
+        ImGui::SliderFloat("Макс. плотность", &isoMax, 0.0f, 1.0f);
 
-        ImGui::Checkbox("STBN smooth", &smoothing);
-        ImGui::Checkbox("Use DVR", &use_dvr);
+        ImGui::Checkbox("STBN", &smoothing);
+        ImGui::Checkbox("Полупрозрачность", &use_dvr);
 
-        ImGui::Text("Virtual clipper:");
-        ImGui::SliderFloat("X Axis", &clipX, -2.0f, 2.0f);
-        ImGui::SliderFloat("Y Axis", &clipY, -2.0f, 2.0f);
-        ImGui::SliderFloat("Z Axis", &clipZ, -2.0f, 2.0f);
+        ImGui::Text("Срез по осям:");
+        ImGui::SliderFloat("Ось -X", &negClipX, -2.0f, 2.0f);
+        ImGui::SliderFloat("Ось -Y", &negClipY, -2.0f, 2.0f);
+        ImGui::SliderFloat("Ось -Z", &negClipZ, -2.0f, 2.0f);
+        ImGui::SliderFloat("Ось X", &clipX, -2.0f, 2.0f);
+        ImGui::SliderFloat("Ось Y", &clipY, -2.0f, 2.0f);
+        ImGui::SliderFloat("Ось Z", &clipZ, -2.0f, 2.0f);
 
-        ImGui::Checkbox("Rotate scan", &canRotate);
+        ImGui::Checkbox("Вращение", &canRotate);
 
         ImGui::Separator();
-        ImGui::Text("Transfer Function:");
+        ImGui::Text("Цветовая палитра:");
         if (ImGui::GradientEditor(&gradient, draggingMark, selectedMark)) {
             UpdateTransferFunctionTexture();
         }
