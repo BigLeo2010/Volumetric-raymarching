@@ -65,30 +65,6 @@ vec3 getVolumeNormal(vec3 uvw) {
 
 vec3 light_position = vec3(0.0, 5.0, 5.0);
 
-vec3 getProceduralColor(float density)
-{
-    vec3 color = vec3(0.0);
-
-    if (density > 0.05 && density <= 0.25) {
-        float factor = (density - 0.05) / (0.25 - 0.05);
-        color = mix(vec3(0.0, 0.05, 0.2), vec3(0.1, 0.3, 0.6), factor);
-    }
-    else if (density > 0.25 && density <= 0.45) {
-        float factor = (density - 0.25) / (0.45 - 0.25);
-        color = mix(vec3(0.4, 0.05, 0.05), vec3(0.7, 0.1, 0.1), factor);
-    }
-    else if (density > 0.45 && density <= 0.65) {
-        float factor = (density - 0.45) / (0.65 - 0.45);
-        color = mix(vec3(0.8, 0.1, 0.1), vec3(1.0, 0.4, 0.1), factor);
-    }
-    else if (density > 0.65) {
-        float factor = clamp((density - 0.65) / (1.0 - 0.65), 0.0, 1.0);
-        color = mix(vec3(0.9, 0.85, 0.8), vec3(1.0, 1.0, 1.0), factor);
-    }
-
-    return color;
-}
-
 vec3 ray_march(in vec3 ro, in vec3 rd)
 {
     float tNear, tFar;
@@ -161,37 +137,6 @@ vec3 ray_march(in vec3 ro, in vec3 rd)
     return vec3(35.0/255.0, 35.0/255.0, 35.0/255.0);
 }
 
-vec4 getProceduralColor_dvr(float density)
-{
-    vec4 color = vec4(0.0, 0.0, 0.0, 0.0);
-
-    if (density > 0.05 && density <= 0.25) {
-        float factor = (density - 0.05) / (0.25 - 0.05);
-        color.rgb = mix(vec3(0.0, 0.05, 0.2), vec3(0.1, 0.3, 0.6), factor);
-        color.a = 0.05;
-    }
-    
-    else if (density > 0.25 && density <= 0.45) {
-        float factor = (density - 0.25) / (0.45 - 0.25);
-        color.rgb = mix(vec3(0.4, 0.05, 0.05), vec3(0.7, 0.1, 0.1), factor);
-        color.a = 0.3;
-    }
-    
-    else if (density > 0.45 && density <= 0.65) {
-        float factor = (density - 0.45) / (0.65 - 0.45);
-        color.rgb = mix(vec3(0.8, 0.1, 0.1), vec3(1.0, 0.4, 0.1), factor);
-        color.a = 0.6;
-    }
-    
-    else if (density > 0.65) {
-        float factor = clamp((density - 0.65) / (1.0 - 0.65), 0.0, 1.0);
-        color.rgb = mix(vec3(0.9, 0.85, 0.8), vec3(1.0, 1.0, 1.0), factor);
-        color.a = 0.9;
-    }
-
-    return color;
-}
-
 vec3 ray_march_dvr(in vec3 ro, in vec3 rd)
 {
     float tNear, tFar;
@@ -231,7 +176,7 @@ vec3 ray_march_dvr(in vec3 ro, in vec3 rd)
 
         if (density >= isoMin && density <= isoMax) {
             
-            vec4 baseColor = getProceduralColor_dvr(density); 
+            vec4 baseColor = texture(colorRamp, density); 
 
             if (baseColor.a > 0.0) {
 

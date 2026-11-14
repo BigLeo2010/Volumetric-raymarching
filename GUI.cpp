@@ -2,7 +2,7 @@
 #include <string>
 
 float GUI::isoMin = 0.2f;
-float GUI::isoMax = 0.9f;
+float GUI::isoMax = 1.0f;
 
 float GUI::clipX = 2.0f;
 float GUI::clipY = 2.0f;
@@ -43,13 +43,13 @@ void GUI::InitGUI(GLFWwindow* window) {
 }
 
 void GUI::UpdateTransferFunctionTexture() {
-    float data[256 * 3];
+    float data[256 * 4];
     for (int i = 0; i < 256; ++i) {
-        gradient.getColorAt(i / 255.0f, &data[i * 3]);
+        gradient.getColorAt(i / 255.0f, &data[i * 4]);
     }
 
     glBindTexture(GL_TEXTURE_1D, colorID);
-    glTexImage1D(GL_TEXTURE_1D, 0, GL_RGB32F, 256, 0, GL_RGB, GL_FLOAT, data);
+    glTexImage1D(GL_TEXTURE_1D, 0, GL_RGBA32F, 256, 0, GL_RGBA, GL_FLOAT, data);
 }
 
 void GUI::UIInputs() {
